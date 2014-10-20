@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Steward</title>
+	<script src="../../tent/tarpjs/hawk.js"></script>
+	<script src="../../tent/tarpjs/tarp.js"></script>
+	<script src="scaffold.js"></script>
+	<script src="posttypes.js"></script>
+	<script src="mask.js"></script>
+	<script>
+		var post_types = [
+			"http://tent.zatnosk.dk/types/project/v1",
+			"http://tent.zatnosk.dk/types/task/v1",
+			"http://tent.zatnosk.dk/types/note/v1",
+		]
+		var readonly_types = [
+			"http://cacauu.de/tasky/list/v0.1",
+			"http://cacauu.de/tasky/task/v0.1"
+		]
+		var app_data = {
+			"name": "Steward",
+			"url": "http://apps.zatnosk.dk/steward",
+			"redirect_uri": "http://apps.zatnosk.dk/steward.html",
+			"types": {
+				"write": post_types,
+				"read": readonly_types
+			},
+			"scopes": [
+				"permissions"
+			]
+		}
+	</script>
+	<style>
+	* {
+		margin: 0px;
+		padding: 0px;
+		font-family: sans-serif;
+	}
+	body {
+		background: #f8f8f8;
+	}
+	body > header {
+		z-index: 1;
+		position: fixed;
+		left: 0px;
+		top: 0px;
+		right: 0px;
+		height: 49px;
+		background: #020;
+		border-bottom: 1px solid #686;
+		color: white;
+	}
+	body > header h1 {
+		height: 50px;
+		line-height: 50px;
+		padding: 0px 20px;
+		width: 160px;
+		float: left;
+	}
+	body > header .user_picture {
+		float: left;
+		width: 40px;
+		height: 40px;
+		margin: 5px;
+		border-radius: 5px;
+	}
+	#menu {
+		position: fixed;
+		top: 50px;
+		left: 0px;
+		bottom: 0px;
+		width: 199px;
+		border-right: 1px solid #686;
+		background: #f8f8f8;
+		overflow: scroll;
+		margin-bottom: 50px;
+	}
+	#menu > a {
+		display: block;
+		padding: 20px;
+		border-bottom: 1px solid #686;
+		background: #fff;
+	}
+	#menu > a:hover {
+		background: #B3F0B3;
+	}
+	#menu > a.selected {
+		background: #0BC20B;
+	}
+	#container {
+		position: absolute;
+		top: 50px;
+		left: 200px;
+		right: 0px;
+	}
+	.tools {
+		position: fixed;
+		bottom: 0px;
+		height: 50px;
+		background: #ddd;
+	}
+	#menu .tools {
+		left: 0px;
+		width: 199px;
+		border-right: 1px solid #686;
+	}
+
+	#container .tools {
+		left: 200px;
+		right: 0px;
+	}
+	.buttonditch {
+		height: 1rem;
+		background: rgba(0,0,0,0.1);
+	}
+	.buttonditch .button {
+		display: inline-block;
+		font-family: monospace;
+		padding: 0px 3px;
+		font-size: 0.6rem;
+		line-height: 1rem;
+		border-radius: 3px;
+		margin-right: 5px;
+	}
+	.tools .button {
+		display: block;
+		height: 40px;
+		width: 40px;
+		margin: 5px;
+		line-height: 40px;
+		border-radius: 10px;
+		text-align: center;
+		font-size: 12px;
+		float: left;
+	}
+	.button {
+		cursor: pointer;
+	}
+	.button.new {
+		background: #482;
+		color: white;
+	}
+	.button.edit {
+		background: #248;
+		color: white;
+	}
+	.button.save {
+		background: #284;
+		color: white;
+	}
+	.button.delete {
+		background: #842;
+		color: white;
+	}
+	.project {
+		padding: 30px 0px 10px 0px;
+		border-bottom: 1px solid rgba(0,0,0,0.1);
+		margin-bottom: 49px;
+		background: #fff;
+		display: none;
+	}
+	.project.selected {
+		display: block;
+	}
+	.project header h1 {
+		padding: 0px 30px 10px 30px;
+		
+	}
+	.project header .info:not(:empty) {
+		padding: 5px 30px;
+		border-top: 5px solid rgba(0,0,0,0.1);
+	}
+	.project header .buttonditch {
+		padding: 0px 30px;
+	}
+	.project header:not(:hover) .button {
+		display: none;
+	}
+	.task {
+		margin: 20px 30px;
+		list-style: none;
+		border-left: 2px solid #000;
+	//	background: #9ECEE6;
+	}
+	.task .status {
+		display: inline-block;
+		font-family: monospace;
+		padding: 0px 5px;
+		margin-right: 15px;
+		font-size: 0.6rem;
+		line-height: 1rem;
+	}
+	.task .status[data-status='todo']{
+		background: #E69E9E;
+	}
+	.task .status[data-status='done']{
+		background: #9ECEE6;
+	}
+	.task h2 {
+		font-size: 1.2rem;
+		margin: 5px 5px;
+	}
+	.task p {
+		font-style: italic;
+		padding-left: 5px;
+	}
+	.task:not(:hover) .button {
+		display: none;
+	}
+	.note {
+		padding: 5px 0px;
+		margin: 10px 30px;
+		background: #ff8;
+		border: 1px solid #d6d6b3;
+	}
+	.note p {
+		padding: 5px 15px;
+	}
+	.note .buttonditch {
+		padding: 0px 15px;
+	}
+	.note:not(:hover) .button {
+		display: none;
+	}
+	.info {
+		font-size: 0.8rem;
+		font-style: italic;
+	}
+	#overlay {
+		position: fixed;
+		top: 0px;
+		bottom: 0px;
+		left: 0px;
+		right: 0px;
+		background: rgba(0,0,0,0.5);
+		display: none;
+	}
+	#lightbox {
+		border-radius: 3px;
+		width: 600px;
+		margin: 100px auto;
+		background: white;
+		padding: 30px;
+	}
+	#lightbox h2 {
+		font-variant: small-caps;
+		margin-bottom: 10px;
+		text-align: left;
+	}
+	#lightbox form {
+		text-align: right;
+	}
+	#lightbox form label {
+		clear: both;
+		display: block;
+		width: 600px;
+		margin: 5px 0px;
+	}
+	#lightbox form div{
+		width: 80px;
+		padding: 5px 10px;
+		float: left;
+		text-align: right;
+	}
+	#lightbox form textarea {
+		min-width: 500px;
+		max-width: 500px;
+		padding: 5px;
+	}
+	#lightbox form input:not([type='submit']) {
+		padding: 3px;
+		font-size: 1rem;
+		width: 500px;
+	}
+	#lightbox form input[type='submit']{
+		padding: 0px;
+		margin: 5px 0px;
+		font-size: 0.9rem;
+		font-variant: small-caps;
+	}
+	#lightbox .confirmation {
+		text-align: center;
+	}
+	#lightbox .confirmation .button {
+		margin: 5px 5px 5px 0px;
+		padding: 5px;
+		width: 100px;
+		display: inline-block;
+	}
+	#lightbox .confirmation .button.delete {
+		background-color: #820;
+		color: white;
+	}
+	#lightbox .confirmation .button.delete:hover {
+		background-color: #d40;
+	}
+	#lightbox .confirmation .button.cancel {
+		background-color: #444;
+		color: white;
+	}
+	#lightbox .confirmation .button.cancel:hover {
+		background-color: #888;
+	}
+	.readonly h1, .readonly h2{
+		color: #800;
+	}
+	</style>
+</head>
+<body>
+	<header>
+		<h1>Steward</h1><img src="" class="user_picture">
+	</header>
+	<nav id="menu">
+		<div class="tools">
+			<a class="button new" id="new_list">+list</a>
+		</div>
+	</nav>
+	<div id="container">
+		<div class="tools">
+			<a class="button new" id="new_task">+task</a>
+			<a class="button new" id="new_note">+note</a>
+		</div>
+	</div>
+	<div id="overlay">
+		<div id="lightbox"></div>
+	</div>
+<script>
+	var steward = new App(app_data, Mask())
+</script>
+</body>
+</html>
