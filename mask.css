@@ -1,0 +1,221 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+.site-header {
+	height: 45px;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	border-bottom: 5px solid black;
+	background: white;
+	z-index: 1;
+}
+
+.site-header > * {
+	float: left;
+	padding: 5px;
+}
+
+body {
+	margin: 50px auto 0px auto;
+	width: 900px;
+}
+
+.columns > * {
+	display: table-cell;
+}
+
+.slim {
+	max-width: 190px;
+	min-width: 190px;
+	padding: 0px 10px 0px 0px;
+}
+
+.wide {
+	max-width: 490px;
+	min-width: 490px;
+	padding: 0px 10px 0px 0px;
+}
+
+.deck > :not(.selected) {
+	display: none;
+}
+
+.media {
+	display: block;
+	margin: 5px;
+	padding-bottom: 1.2rem;
+}
+
+.media .heading {
+	display: block;
+	font-size: 1.2rem;
+	border-left: 0.6rem solid black;
+	padding-left: 0.4rem;
+}
+
+.media .content {
+	margin-top: 5px;
+	display: block;
+	background: rgba(255,255,255,0.5);
+}
+
+.media.big {
+	border-top: 3px solid black;
+}
+
+.media.big > * {
+	padding-left: 1rem;
+}
+
+.media.big .heading {
+	font-size: 2rem;
+	padding-left: 0.4rem;
+}
+
+.media.big .content {
+	font-size: 1.2rem;
+}
+
+.media.task .heading{
+	border-left-color: #666;
+}
+
+.media.task.todo .heading{
+	border-left-color: #d64;
+}
+.media.task.done .heading{
+	border-left-color: #6a6;
+}
+
+
+.media:not(:hover) .buttonditch {
+	display: none;
+}
+
+.media .buttonditch {
+	height: 0;
+}
+
+.media .buttonditch .button {
+	float: left;
+	font-size: 0.8rem;
+	margin-right: 10px;
+	padding: 0px 2px;
+}
+
+.button {
+	display: block;
+	font-variant: small-caps;
+	border-radius: 5px;
+	border: 1px solid black;
+	border-left: 0px;
+	border-right: 0px;
+	cursor: pointer;
+}
+.button.new:hover {
+	background: #AFA;
+}
+.button.edit:hover {
+	background: #FFA;
+}
+.button.save:hover {
+	background: #AAF;
+}
+.button.delete:hover {
+	background: #FAA;
+}
+
+:not(.buttonditch) > .button {
+	padding: 10px;
+}
+
+.media.button {
+	display: inline-block;
+	max-width: 200px;
+	margin-top: 20px;
+	margin-bottom: 50px;
+}
+
+.menu > * {
+	display: block;
+	padding: 5px 10px;
+	overflow: hidden;
+	height: 35px;
+}
+
+.menu > .button {
+	height: auto;
+}
+
+.menu > .selected {
+	border-radius: 100% 0 0 100% / 5px 0 0 5px;/**/
+	background: linear-gradient(to right, #ccc, #eee 90%, #fff 100%);
+}
+
+
+@media (max-width: 899px) {
+	body {
+		width: 700px;
+		margin-left: 0;
+	}
+	.columns.medium-collapse > * {
+		display: block;
+	}
+	.columns.medium-collapse > .slim {
+		min-width: 360px;
+		max-width: 500px;
+	}
+}
+
+@media (max-width: 699px) {
+	html {
+		position: relative;
+		min-width: 360px;
+	}
+	body {
+		width: auto;
+		padding-top: 0px;
+	}
+	.site-header {
+		position: absolute;
+	}
+	.wide {
+		min-width: 360px;
+	}
+	.small-dropdown {
+		display: block;
+		position: absolute;
+		top: 0px;
+		right: 0px;
+		z-index: 2;
+		background: #fff;
+		max-width: 150px;
+		min-width: 150px;
+		height: 45px;
+		padding: 0px;
+		border-left: 2px solid black;
+		border-bottom: 2px solid black;
+	}
+	.small-dropdown:hover {
+		padding: 50px 0 20px 0;
+		height: auto;
+	}
+	.small-dropdown > .selected {
+		position: absolute;
+		top: 0px;
+	}
+	.small-dropdown > :not(.selected) {
+		display: none;
+	}
+	.small-dropdown:hover > * {
+		display: block;
+	}
+	.small-dropdown.menu > .selected {
+		border-radius: 0;
+		background: inherit;
+	}
+}

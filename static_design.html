@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8"></meta>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+		<title>Steward | Static Design</title>
+		<link rel="stylesheet" href="mask.css">
+	</head>
+	<template id="project">
+		<div class="columns">
+			<header class="media big">
+				<h1 class="heading">
+					<content select=".title"></content>
+				</h1>
+				<p class="content">
+					<content select=".text"></content>
+				</p>
+				<mask-buttonditch>
+				</mask-buttonditch>
+			</header>
+			<div class="wide">
+				<content select="tasks"></content>
+			</div>
+			<div class="slim">
+				<content select="notes"></content>
+			</div>
+		</div>
+	</template>
+	<template id="task">
+		<div class="media">
+			<h2 class="heading">
+				<content select=".title"></content>
+			</h2>
+			<p class="content">
+				<content select=".description"></content>
+			</p>
+			<mask-buttonditch>
+			</mask-buttonditch>
+		</div>
+	</template>
+	<template id="note">
+		<div class="media">
+			<p class="content">
+				<content select=".text"></content>
+			</p>
+			<mask-buttonditch>
+			</mask-buttonditch>
+		</div>
+	</template>
+
+
+	<body class="columns">
+		<header class="site-header">
+			<h1>Steward</h1>
+			<img class="user_picture" src=""></img>
+		</header>
+			<nav class="slim small-dropdown menu">
+				<a id="new_list" class="button new">
+					+project
+				</a>
+				<a>
+					Project 1
+				</a>
+				<a class="selected">
+					Project "What-happens-when-I-have-a-project-with-a-really-long-name"
+				</a>
+				<a>
+					Project 3
+				</a>
+				<a>
+					Project 4
+				</a>
+				<a>
+					Project 5
+				</a>
+				<a>
+					Project 6
+				</a>
+				<a>
+					Project 7
+				</a>
+				<a>
+					Project 8
+				</a>
+				<a>
+					Project 9
+				</a>
+				<a>
+					Project 10
+				</a>
+				<a>
+					Project 11
+				</a>
+				<a>
+					Project 12
+				</a>
+				<a>
+					Project 13
+				</a>
+				<a>
+					Project 14
+				</a>
+				<a>
+					Project 15
+				</a>
+			</nav>
+			<div class="deck">
+				<div class="tools">
+					
+					
+				</div>
+				<div class="selected columns medium-collapse">
+					<header class="media big">
+						<h1 class="heading">
+							Project "What-happens-when-I-have-a-project-with-a-really-long-name"
+						</h1>
+						<p class="content">Project WHWIHAPWARLN information. This project have been given a really long name, in order to test the robustness of the static design page you're currently looking at.</p>
+						<div class="buttonditch">
+							<a class="button edit">
+								edit
+							</a>
+							<a class="button save">
+								save
+							</a>
+							<a class="button delete">
+								delete
+							</a>
+						</div>
+					</header>
+					<ul class="wide">
+						<li class="task media todo">
+							<h2 class="heading">
+								Task 1
+							</h2>
+							<p class="content">
+								Task 1 description. This task's status is "todo". Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor.
+							</p>
+							<div class="buttonditch">
+								<a class="button edit">
+									edit
+								</a>
+								<a class="button save">
+									save
+								</a>
+								<a class="button delete">
+									delete
+								</a>
+							</div>
+						</li>
+						<li class="task media">
+							<h2 class="heading">
+								Task 2
+							</h2>
+							<p class="content">
+								Task 2 description. This task's status is unknown. Praesent et diam eget libero egestas mattis sit amet vitae augue.
+							</p>
+							<div class="buttonditch">
+								<a class="button edit">
+									edit
+								</a>
+								<a class="button save">
+									save
+								</a>
+								<a class="button delete">
+									delete
+								</a>
+							</div>
+						</li>
+						<li class="task media done">
+							<h2 class="heading">
+								Task 3
+							</h2>
+							<p class="content">
+								Task 3 description, This task's status is "done". bla bla bla.
+							</p>
+							<div class="buttonditch">
+								<a class="button edit">
+									edit
+								</a>
+								<a class="button save">
+									save
+								</a>
+								<a class="button delete">
+									delete
+								</a>
+							</div>
+						</li>
+						<a id="new_task" class="media button new">
+							+task
+						</a>
+					</ul>
+					<div class="slim">
+					<div class="note media">
+						<p>
+						Note 1 text, lorem ipsum, bla bla.
+						</p>
+						<div class="buttonditch">
+							<a class="button edit">
+								edit
+							</a>
+							<a class="button save">
+								save
+							</a>
+							<a class="button delete">
+								delete
+							</a>
+						</div>
+					</div>
+					<div class="note media">
+						
+						<p>
+						Note 2 text, Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor.
+						</p>
+						<div class="buttonditch">
+							<a class="button edit">
+								edit
+							</a>
+							<a class="button save">
+								save
+							</a>
+							<a class="button delete">
+								delete
+							</a>
+						</div>
+					</div>
+					<div class="note media">
+						<p>
+						Note 3 text, lorem ipsum, bla bla.
+						</p>
+						<div class="buttonditch">
+							<a class="button edit">
+								edit
+							</a>
+							<a class="button save">
+								save
+							</a>
+							<a class="button delete">
+								delete
+							</a>
+						</div>
+					</div>
+					<div class="note media">
+						<p>
+						Note 4 text, Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit.
+						</p>
+						<div class="buttonditch">
+							<a class="button edit">
+								edit
+							</a>
+							<a class="button save">
+								save
+							</a>
+							<a class="button delete">
+								delete
+							</a>
+						</div>
+					</div>
+
+					<div class="note media">
+						<p>
+						Note 5 text, lorem ipsum, bla bla.
+						</p>
+						<div class="buttonditch">
+							<a class="button edit">
+								edit
+							</a>
+							<a class="button save">
+								save
+							</a>
+							<a class="button delete">
+								delete
+							</a>
+						</div>
+					</div>
+
+					<div class="note media">
+						<p>
+						Note 6 text, Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue.
+						</p>
+						<div class="buttonditch">
+							<a class="button edit">
+								edit
+							</a>
+							<a class="button save">
+								save
+							</a>
+							<a class="button delete">
+								delete
+							</a>
+						</div>
+					</div>
+
+					<div class="note media">
+						<p>
+						Note 7 text, lorem ipsum, bla bla.
+						</p>
+						<div class="buttonditch">
+							<a class="button edit">
+								edit
+							</a>
+							<a class="button save">
+								save
+							</a>
+							<a class="button delete">
+								delete
+							</a>
+						</div>
+					</div>
+
+					<div class="note media">
+						<p>
+						Note 8 text, lorem ipsum, bla bla.
+						</p>
+						<div class="buttonditch">
+							<a class="button edit">
+								edit
+							</a>
+							<a class="button save">
+								save
+							</a>
+							<a class="button delete">
+								delete
+							</a>
+						</div>
+					</div>
+					<a id="new_note" class="media button new">
+						+note
+					</a>
+					</div>
+				</div>
+				<div class="columns">
+					<header class="media big">
+						<h1 class="heading">
+							Project 2
+						</h1>
+						<p class="content">Project 2 information.</p>
+						<div class="buttonditch">
+							<a class="button edit">
+								edit
+							</a>
+							<a class="button save">
+								save
+							</a>
+							<a class="button delete">
+								delete
+							</a>
+						</div>
+					</header>
+					<ul class="wide">
+						<li class="task media todo">
+							<h2 class="heading">
+								Task 1
+							</h2>
+							<p class="content">
+								Task 1 description, bla bla bla.
+							</p>
+							<div class="buttonditch">
+								<a class="button edit">
+									edit
+								</a>
+								<a class="button save">
+									save
+								</a>
+								<a class="button delete">
+									delete
+								</a>
+							</div>
+						</li>
+						<li class="task media todo">
+							<h2 class="heading">
+								Task 2
+							</h2>
+							<p class="content">
+								Task 2 description, bla bla bla.
+							</p>
+							<div class="buttonditch">
+								<a class="button edit">
+									edit
+								</a>
+								<a class="button save">
+									save
+								</a>
+								<a class="button delete">
+									delete
+								</a>
+							</div>
+						</li>
+						<li class="task media done">
+							<h2 class="heading">
+								Task 3
+							</h2>
+							<p class="content">
+								Task 3 description, bla bla bla.
+							</p>
+							<div class="buttonditch">
+								<a class="button edit">
+									edit
+								</a>
+								<a class="button save">
+									save
+								</a>
+								<a class="button delete">
+									delete
+								</a>
+							</div>
+						</li>
+					</ul>
+					<div class="slim">
+						<div class="note media">
+							<p>
+							Note 1 text, lorem ipsum, bla bla.
+							</p>
+							<div class="buttonditch">
+								<a class="button edit">
+									edit
+								</a>
+								<a class="button save">
+									save
+								</a>
+								<a class="button delete">
+									delete
+								</a>
+							</div>
+						</div>
+						<div class="note media">
+							
+							<p>
+							Note 2 text, lorem ipsum, bla bla.
+							</p>
+							<div class="buttonditch">
+								<a class="button edit">
+									edit
+								</a>
+								<a class="button save">
+									save
+								</a>
+								<a class="button delete">
+									delete
+								</a>
+							</div>
+						</div>
+						<div class="note media">
+							<p>
+							Note 3 text, lorem ipsum, bla bla.
+							</p>
+							<div class="buttonditch">
+								<a class="button edit">
+									edit
+								</a>
+								<a class="button save">
+									save
+								</a>
+								<a class="button delete">
+									delete
+								</a>
+							</div>
+						</div>
+						<div class="note media">
+							<p>
+							Note 3 text, lorem ipsum, bla bla.
+							</p>
+							<div class="buttonditch">
+								<a class="button edit">
+									edit
+								</a>
+								<a class="button save">
+									save
+								</a>
+								<a class="button delete">
+									delete
+								</a>
+							</div>
+						</div>
+
+						<div class="note media">
+							<p>
+							Note 3 text, lorem ipsum, bla bla.
+							</p>
+							<div class="buttonditch">
+								<a class="button edit">
+									edit
+								</a>
+								<a class="button save">
+									save
+								</a>
+								<a class="button delete">
+									delete
+								</a>
+							</div>
+						</div>
+
+						<div class="note media">
+							<p>
+							Note 3 text, lorem ipsum, bla bla.
+							</p>
+							<div class="buttonditch">
+								<a class="button edit">
+									edit
+								</a>
+								<a class="button save">
+									save
+								</a>
+								<a class="button delete">
+									delete
+								</a>
+							</div>
+						</div>
+
+						<div class="note media">
+							<p>
+							Note 3 text, lorem ipsum, bla bla.
+							</p>
+							<div class="buttonditch">
+								<a class="button edit">
+									edit
+								</a>
+								<a class="button save">
+									save
+								</a>
+								<a class="button delete">
+									delete
+								</a>
+							</div>
+						</div>
+
+						<div class="note media">
+							<p>
+							Note 3 text, lorem ipsum, bla bla.
+							</p>
+							<div class="buttonditch">
+								<a class="button edit">
+									edit
+								</a>
+								<a class="button save">
+									save
+								</a>
+								<a class="button delete">
+									delete
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="columns">
+					<header class="media big">
+						<h1 class="heading">
+							Project 2
+						</h1>
+						<p class="content">Project 2 information.</p>
+						<div class="buttonditch">
+							<a class="button edit">
+								edit
+							</a>
+							<a class="button save">
+								save
+							</a>
+							<a class="button delete">
+								delete
+							</a>
+						</div>
+					</header>
+					<ul class="wide">
+						<li class="task media todo">
+							<h2 class="heading">
+								Task 1
+							</h2>
+							<p class="content">
+								Task 1 description, bla bla bla.
+							</p>
+							<div class="buttonditch">
+								<a class="button edit">
+									edit
+								</a>
+								<a class="button save">
+									save
+								</a>
+								<a class="button delete">
+									delete
+								</a>
+							</div>
+						</li>
+						<li class="task media todo">
+							<h2 class="heading">
+								Task 2
+							</h2>
+							<p class="content">
+								Task 2 description, bla bla bla.
+							</p>
+							<div class="buttonditch">
+								<a class="button edit">
+									edit
+								</a>
+								<a class="button save">
+									save
+								</a>
+								<a class="button delete">
+									delete
+								</a>
+							</div>
+						</li>
+						<li class="task media done">
+							<h2 class="heading">
+								Task 3
+							</h2>
+							<p class="content">
+								Task 3 description, bla bla bla.
+							</p>
+							<div class="buttonditch">
+								<a class="button edit">
+									edit
+								</a>
+								<a class="button save">
+									save
+								</a>
+								<a class="button delete">
+									delete
+								</a>
+							</div>
+						</li>
+					</ul>
+					<div class="slim">
+					<div class="note media">
+						<p>
+						Note 1 text, lorem ipsum, bla bla.
+						</p>
+						<div class="buttonditch">
+							<a class="button edit">
+								edit
+							</a>
+							<a class="button save">
+								save
+							</a>
+							<a class="button delete">
+								delete
+							</a>
+						</div>
+					</div>
+					<div class="note media">
+						
+						<p>
+						Note 2 text, lorem ipsum, bla bla.
+						</p>
+						<div class="buttonditch">
+							<a class="button edit">
+								edit
+							</a>
+							<a class="button save">
+								save
+							</a>
+							<a class="button delete">
+								delete
+							</a>
+						</div>
+					</div>
+					<div class="note media">
+						<p>
+						Note 3 text, lorem ipsum, bla bla.
+						</p>
+						<div class="buttonditch">
+							<a class="button edit">
+								edit
+							</a>
+							<a class="button save">
+								save
+							</a>
+							<a class="button delete">
+								delete
+							</a>
+						</div>
+					</div>
+					<div class="note media">
+						<p>
+						Note 3 text, lorem ipsum, bla bla.
+						</p>
+						<div class="buttonditch">
+							<a class="button edit">
+								edit
+							</a>
+							<a class="button save">
+								save
+							</a>
+							<a class="button delete">
+								delete
+							</a>
+						</div>
+					</div>
+
+					<div class="note media">
+						<p>
+						Note 3 text, lorem ipsum, bla bla.
+						</p>
+						<div class="buttonditch">
+							<a class="button edit">
+								edit
+							</a>
+							<a class="button save">
+								save
+							</a>
+							<a class="button delete">
+								delete
+							</a>
+						</div>
+					</div>
+
+					<div class="note media">
+						<p>
+						Note 3 text, lorem ipsum, bla bla.
+						</p>
+						<div class="buttonditch">
+							<a class="button edit">
+								edit
+							</a>
+							<a class="button save">
+								save
+							</a>
+							<a class="button delete">
+								delete
+							</a>
+						</div>
+					</div>
+
+					<div class="note media">
+						<p>
+						Note 3 text, lorem ipsum, bla bla.
+						</p>
+						<div class="buttonditch">
+							<a class="button edit">
+								edit
+							</a>
+							<a class="button save">
+								save
+							</a>
+							<a class="button delete">
+								delete
+							</a>
+						</div>
+					</div>
+
+					<div class="note media">
+						<p>
+						Note 3 text, lorem ipsum, bla bla.
+						</p>
+						<div class="buttonditch">
+							<a class="button edit">
+								edit
+							</a>
+							<a class="button save">
+								save
+							</a>
+							<a class="button delete">
+								delete
+							</a>
+						</div>
+					</div>
+
+					</div>
+				</div>
+			</div>
+	</body>
+</html>
+
