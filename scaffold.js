@@ -132,18 +132,35 @@ function App(app_data, ui){
 				}, function(e){
 					ui.error(e)
 				})
-				return
+			} else {
+				ui.error("ERROR: Not currently connected to a Tent server.")
 			}
-			ui.error("ERROR: No active server.")
 		},
 		'save': function(post){
 			if(app.active_server){
 				post.commit(app.active_server).catch(function(e){
 					ui.error(e)
 				})
-				return
+			} else {
+				ui.error("ERROR: Not currently connected to a Tent server.")
 			}
-			ui.error("ERROR: No active server.")
+		},
+		'create': function(posttype, parent_id){
+			parent = Post.list[parent_id]
+			if(posttype == 'project'){
+				var id = Math.random().toString(36).substr(2)
+				var post = Project.create('Unnamed', id)
+				Post.list[id] = post
+			} else if(posttype == 'task'){
+				var post = Task.create(parent)
+			} else if(posttype == 'note'){
+				var post = Note.create(parent)
+			}
+			
+			if(parent && typeof parent.claimPost == 'function'){
+				parent.claimPost(post)
+			}
+			return post
 		}
 	}
 	

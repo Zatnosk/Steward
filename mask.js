@@ -83,65 +83,49 @@ var Mask = function(){
 	}
 
 	Mask.prototype.activate = function(actions){
+		function getSelectedProject(){
+			var selected = document.getElementById('menu')
+								.getElementsByClassName('selected')[0]
+			if(selected){
+				return selected.getAttribute('data-target')
+			} else {
+				return 'orphanage'
+			}
+		}
 		this.actions = actions
 		var ui = this
 		document.getElementById('new_list').onclick = function(){
-			var id = Math.random().toString(36).substr(2)
-			Post.list[id] = Project.create('Unnamed', id)
-			ui.show_project(Post.list[id])
+			ui.show_project(actions.create('project'))
 		}
 		document.getElementById('new_task').onclick = function(){
-			var selected = document.getElementById('menu')
-								.getElementsByClassName('selected')[0]
-			if(selected){
-				var project_id = selected.getAttribute('data-target')
-			} else {
-				var project_id = 'orphanage'
-			}
-			var project = Post.list[project_id]
-
-			var task = Task.create('Unnamed', project)
-			project.claimPost(task)
-			console.log(project,task)
-			ui.show_task(task)
+			ui.show_task(actions.create('task', getSelectedProject()))
 		}
 		document.getElementById('new_note').onclick = function(){
-			var selected = document.getElementById('menu')
-								.getElementsByClassName('selected')[0]
-			if(selected){
-				var project_id = selected.getAttribute('data-target')
-			} else {
-				var project_id = 'orphanage'
-			}
-			var project = Post.list[project_id]
-			var note = Note.create('Empty', project)
-			project.claimPost(note)
-			ui.show_note(note)
+			ui.show_note(actions.create('note', getSelectedProject()))
 		}
 		this.init_lightbox()
 	}
 
-	Mask.prototype.request_login = function(callback){
+	Mask.prototype.request_login = function(do_login){
 		var ui = this
-		function createLoginForm(login){
-			var form = document.createElement('form')
-			var label = document.createElement('label')
-			label.textContent = "Tent Entity: "
-			form.appendChild(label)
-			var input = document.createElement('input')
-			label.appendChild(input)
-			var button = document.createElement('input')
-			button.type = "submit"
-			button.value = "Login"
-			form.appendChild(button)
-			form.onsubmit = function(e){
-				login(input.value)
-				ui.close_lightbox()
-				e.preventDefault()
-			}
-			return form
+
+		var form = document.createElement('form')
+		var label = document.createElement('label')
+		label.textContent = "Tent Entity: "
+		form.appendChild(label)
+		var input = document.createElement('input')
+		label.appendChild(input)
+		var button = document.createElement('input')
+		button.type = "submit"
+		button.value = "Login"
+		form.appendChild(button)
+		form.onsubmit = function(e){
+			do_login(input.value)
+			ui.close_lightbox()
+			e.preventDefault()
 		}
-		this.open_lightbox(createLoginForm(callback))
+
+		this.open_lightbox(form)
 	}
 
 	/*******************************************************************************
@@ -464,7 +448,7 @@ var Mask = function(){
 		edit_submit.value = 'Save'
 		edit.appendChild(edit_submit)
 
-		dom.update = function(project){
+		dom.update = function(){
 			this.root.id = project.getID()
 			menuitem.setAttribute('data-target', project.getID())
 			this.name.innerHTML = project.data.content.name

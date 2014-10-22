@@ -8,10 +8,10 @@ function Note(data){
 Note.prototype = new Post
 Post.known_types['http://tent.zatnosk.dk/types/note/v1'] = Note
 
-Note.create = function(text, project){
+Note.create = function(project){
 	var data = {
 		'content': {
-			'text': text
+			'text': ""
 		},
 		'type': "http://tent.zatnosk.dk/types/note/v1#",
 		'permissions': {
@@ -49,10 +49,10 @@ Project.prototype = new Post
 Post.known_types['http://cacauu.de/tasky/list/v0.1'] = Project
 Post.known_types['http://tent.zatnosk.dk/types/project/v1'] = Project
 
-Project.create = function(name, local_id){
+Project.create = function(local_id){
 	var data = {
 		'content': {
-			'name': name
+			'name': ''
 		},
 		'type': 'http://tent.zatnosk.dk/types/project/v1#',
 		'permissions': {
@@ -78,10 +78,7 @@ Project.prototype.newdata = function(data){
 	this.data = data
 }
 
-Project.prototype.claimPost = function(post, entity, id){
-	if(entity || id){
-		console.error('deprecated', entity, id)
-	}
+Project.prototype.claimPost = function(post){
 	var success = post.addMention(this)
 	if(!success){
 		post.local_project = this
@@ -99,11 +96,11 @@ Task.prototype = new Post
 Post.known_types['http://cacauu.de/tasky/task/v0.1'] = Task
 Post.known_types['http://tent.zatnosk.dk/types/task/v1'] = Task
 
-Task.create = function(title, project){
+Task.create = function(project){
 	var data = {
 		'content': {
 			'status': 'todo',
-			'title': title,
+			'title': '',
 		},
 		'type': 'http://tent.zatnosk.dk/types/task/v1#todo',
 		'permissions': {
@@ -111,9 +108,11 @@ Task.create = function(title, project){
 		},
 		'mentions': []
 	}
-	var mention = project.toMention()
-	if(mention){
-		data.mentions.push(mention)
+	if(project){
+		var mention = project.toMention()
+		if(mention){
+			data.mentions.push(mention)
+		}
 	}
 	return new Task(data)
 }
@@ -140,13 +139,5 @@ Task.prototype.getProject = function(){
 		return projects[0]
 	} else {
 		return this.local_project
-	}
-}
-
-Task.prototype.moveToProject = function(project_id){
-	console.error('deprecated')
-	var project = Post.list[project_id]
-	if(project){
-		project.claimPost(this)
 	}
 }
