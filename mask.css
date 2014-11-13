@@ -10,7 +10,7 @@
 	left: 0px;
 	right: 0px;
 	border-bottom: 5px solid black;
-	background: white;
+	background: linear-gradient(to top, #000, #6a6 5px);
 	z-index: 1;
 }
 
@@ -46,89 +46,50 @@ body {
 
 .media {
 	display: block;
-	margin: 5px;
-	padding-bottom: 1.2rem;
+	margin: 0px 5px 20px 5px;
 }
 
 .media .heading {
-	display: block;
 	font-size: 1.2rem;
-	border-left: 0.6rem solid black;
-	padding-left: 0.4rem;
 }
 
 .media .content {
 	margin-top: 5px;
-	display: block;
-	background: rgba(255,255,255,0.5);
-}
-
-.media.big {
-	border-top: 3px solid black;
-}
-
-.media.big > * {
-	padding-left: 1rem;
 }
 
 .media.big .heading {
 	font-size: 2rem;
-	padding-left: 0.4rem;
 }
 
 .media.big .content {
 	font-size: 1.2rem;
 }
 
-.media.task .heading{
-	border-left-color: #666;
-}
-
-.media.task.todo .heading{
-	border-left-color: #d64;
-}
-.media.task.done .heading{
-	border-left-color: #6a6;
-}
-
-
-.media:not(:hover) .buttonditch {
-	display: none;
-}
-
-.media .buttonditch {
-	height: 0;
+.media:not(:hover) .buttonditch .button {
+	opacity: 0;
 }
 
 .media .buttonditch .button {
 	float: left;
 	font-size: 0.8rem;
 	margin-right: 10px;
-	padding: 0px 2px;
+	padding: 0px 2px 0px 7px;
 }
 
 .button {
 	display: block;
 	font-variant: small-caps;
-	border-radius: 5px;
-	border: 1px solid black;
-	border-left: 0px;
-	border-right: 0px;
-	cursor: pointer;
+	opacity: 0.5;
+	transition: opacity 0.2s;
+	cursor: default;
+	user-select: none;
+	-ms-user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
 }
-.button.new:hover {
-	background: #AFA;
+.button:hover {
+	opacity: 1;
 }
-.button.edit:hover {
-	background: #FFA;
-}
-.button.save:hover {
-	background: #AAF;
-}
-.button.delete:hover {
-	background: #FAA;
-}
-
 :not(.buttonditch) > .button {
 	padding: 10px;
 }
@@ -152,8 +113,7 @@ body {
 }
 
 .menu > .selected {
-	border-radius: 100% 0 0 100% / 5px 0 0 5px;/**/
-	background: linear-gradient(to right, #ccc, #eee 90%, #fff 100%);
+	
 }
 
 
