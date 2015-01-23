@@ -29,8 +29,8 @@ var Mask = function(){
 		}
 	}
 
-	Interface.prototype.request_login = function(callback){
-		this.mask.request_login(callback)
+	Interface.prototype.request_login = function(callback, known_entities){
+		this.mask.request_login(callback, known_entities)
 	}
 
 	Interface.prototype.error = function(msg){
@@ -106,10 +106,23 @@ var Mask = function(){
 		this.init_lightbox()
 	}
 
-	Mask.prototype.request_login = function(do_login){
+	Mask.prototype.request_login = function(do_login, known_entities){
 		var ui = this
 
 		var form = document.createElement('form')
+		console.log('known:', known_entities)
+		for(var i in known_entities){
+			var e_button = document.createElement('input')
+			e_button.type = "button"
+			e_button.value = known_entities[i]
+			e_button.onclick = function(e){
+				console.log('login:', known_entities[i])
+				do_login(known_entities[i])
+				ui.close_lightbox()
+				e.preventDefault()
+			}
+			form.appendChild(e_button)
+		}
 		var label = document.createElement('label')
 		label.textContent = "Tent Entity: "
 		form.appendChild(label)
