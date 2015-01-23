@@ -1,3 +1,35 @@
+/* Common functions */
+function common_getProject(strict){
+	strict = strict || false
+	var projects = this.getPointersOfType("http://tent.zatnosk.dk/types/project/v1")
+	if(projects && projects.length >= 1){
+		return projects[0]
+	} else if (!strict){
+		return this.local_project
+	} else {
+		return null
+	}
+}
+
+function common_save(server){
+	if(!this.getProject(true) && this.local_project){
+		var project = this.local_project
+		if(project.hasTentID()){
+			// This might be an unreachable state, if everything works as expected
+			this.addMention(project)
+		} else {
+			var post = this
+			return project.save(server).then(function(){
+				var result = post.addMention(project)
+				console.log('add mention!', result, post, project)
+				return post.commit(server)
+			})
+		}
+	}
+	return this.commit(server)
+}
+
+
 /*******************************************************************************
 Note
 *******************************************************************************/
@@ -19,21 +51,17 @@ Note.create = function(project){
 		},
 		'mentions': []
 	}
-	var mention = project.toMention()
-	if(mention){
-		data.mentions.push(mention)
+	if(project){
+		var mention = project.toMention()
+		if(mention){
+			data.mentions.push(mention)
+		}
 	}
 	return new Note(data)
 }
 
-Note.prototype.getProject = function(){
-	var projects = this.getPointersOfType("http://tent.zatnosk.dk/types/project/v1")
-	if(projects && projects.length >= 1){
-		return projects[0]
-	} else {
-		return this.local_project
-	}
-}
+Note.prototype.getProject = common_getProject
+Note.prototype.save = common_save
 
 /*******************************************************************************
 Project
@@ -49,10 +77,10 @@ Project.prototype = new Post
 Post.known_types['http://cacauu.de/tasky/list/v0.1'] = Project
 Post.known_types['http://tent.zatnosk.dk/types/project/v1'] = Project
 
-Project.create = function(local_id){
+Project.create = function(name, local_id){
 	var data = {
 		'content': {
-			'name': ''
+			'name': name
 		},
 		'type': 'http://tent.zatnosk.dk/types/project/v1#',
 		'permissions': {
@@ -117,6 +145,8 @@ Task.create = function(project){
 	return new Task(data)
 }
 
+Task.prototype.save = common_save
+
 Task.prototype.newdata = function(data){
 	if(data.type == 'http://cacauu.de/tasky/task/v0.1#'){
 		data.type = 'http://tent.zatnosk.dk/types/task/v1#'
@@ -133,11 +163,8 @@ Task.prototype.newdata = function(data){
 	this.data = data
 }
 
-Task.prototype.getProject = function(){
-	var projects = this.getPointersOfType("http://tent.zatnosk.dk/types/project/v1")
-	if(projects && projects.length >= 1){
-		return projects[0]
-	} else {
-		return this.local_project
-	}
+Task.prototype.moveToProject = function(){
+	// TODO
 }
+
+Task.prototype.getProject = common_getProject

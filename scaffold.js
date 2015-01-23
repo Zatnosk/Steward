@@ -3,6 +3,7 @@ function Post(data){
 }
 
 Post.prototype.commit = function(server){
+	console.log("COMMIT", this)
 	var post = this
 	return new Promise(function(resolve, reject){
 		if(!server){
@@ -24,6 +25,10 @@ Post.prototype.commit = function(server){
 			resolve(action)
 		}
 	})
+}
+
+Post.prototype.save = function(server){
+	return this.commit(server)
 }
 
 Post.prototype.delete = function(server){
@@ -54,7 +59,7 @@ Post.prototype.newdata = function(data){
 Post.prototype.toMention = function(){
 	if(this.data.id && this.data.entity && this.data.type){
 		return {
-			'id': this.data.id,
+			'post': this.data.id,
 			'entity': this.data.entity,
 			'type': this.data.type
 		}
@@ -64,7 +69,7 @@ Post.prototype.toMention = function(){
 Post.prototype.addMention = function(post){
 	var mention = post.toMention()
 	if(mention){
-		this.data.mentions.push = mention
+		this.data.mentions.push(mention)
 		this.updatePointers()
 		return true
 	}
@@ -95,8 +100,25 @@ Post.prototype.getPointersOfType = function(type){
 	return this.pointers.filter(test)
 }
 
+Post.prototype.hasTentID = function(){
+	return this.data && this.data.id && this.data.entity
+}
+
+Post.prototype.getID_force = function(){
+	var post = this
+	return new Promise(function(resolve, reject){
+		if(!post.hasTentID()){
+			resolve(post.commit())
+		} else {
+			console.log("Promise is not explicitly resolved. (getID_force)")
+		}
+	}).then(function(){
+		return post.data.entity+'/'+post.data.id
+	})
+}
+
 Post.prototype.getID = function(){
-	if(this.data && this.data.id && this.data.entity){
+	if(this.hasTentID()){
 		return this.data.entity+'/'+this.data.id
 	} else if(!this.local_id){
 		this.local_id = Math.random().toString(36).substr(2)
@@ -138,7 +160,7 @@ function App(app_data, ui){
 		},
 		'save': function(post){
 			if(app.active_server){
-				post.commit(app.active_server).catch(function(e){
+				post.save(app.active_server).catch(function(e){
 					ui.error(e)
 				})
 			} else {
@@ -147,6 +169,7 @@ function App(app_data, ui){
 		},
 		'create': function(posttype, parent_id){
 			parent = Post.list[parent_id]
+			
 			if(posttype == 'project'){
 				var id = Math.random().toString(36).substr(2)
 				var post = Project.create('Unnamed', id)
@@ -156,7 +179,7 @@ function App(app_data, ui){
 			} else if(posttype == 'note'){
 				var post = Note.create(parent)
 			}
-			
+			console.log('create', posttype, parent_id, parent, post)
 			if(parent && typeof parent.claimPost == 'function'){
 				parent.claimPost(post)
 			}
@@ -166,7 +189,7 @@ function App(app_data, ui){
 	
 	tarp.get_active_entity().then(function(entity){
 		if(entity){ connect(entity) }
-		else { ui.request_login(connect) }
+		else { ui.request_login(connect, tarp.get_known_entities()) }
 	})
 
 	function connect(entity){
