@@ -192,8 +192,16 @@ function App(app_data, ui){
 		else { ui.request_login(connect, tarp.get_known_entities()) }
 	})
 
+	function setAvatarSrc(server){
+		var avatar = document.getElementById("avatar")
+		var uri = server.get_avatar_uri()
+		console.log("avatar", uri)
+		avatar.src = uri
+	}
+
 	function connect(entity){
 		tarp.get_server(entity).then(function(server){
+			setAvatarSrc(server)
 			app.active_server = server
 			ui.activate(actions)
 			Post.prototype.onupdate = function(){ui.update(this)}
