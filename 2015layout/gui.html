@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Steward interface prototype</title>
+</head>
+<style>
+	* {
+		margin: 0px;
+		padding: 0px;
+		//background-color: rgba(0,0,0,0.1);
+	}
+
+	/**** flex-box related *********/
+	/**/  .row {                 /**/
+	/**/    display: flex;       /**/
+	/**/    flex-flow: row;      /**/
+	/**/  }                      /**/
+	/**/                         /**/
+	/**/  .row >                 /**/
+	/**/  :not(:last-child) {    /**/
+	/**/    margin-right: 20px;  /**/
+	/**/  }                      /**/
+	/**/                         /**/
+	/**/  .column {              /**/
+	/**/    display: flex;       /**/
+	/**/    flex-flow: column;   /**/
+	/**/  }                      /**/
+	/**/                         /**/
+	/**/  .column >              /**/
+	/**/  :not(:last-child) {    /**/
+	/**/    margin-bottom: 20px; /**/
+	/**/  }                      /**/
+	/**/                         /**/
+	/**/  main,                  /**/
+	/**/  section.notes{         /**/
+	/**/    flex-grow: 1;        /**/
+	/**/  }                      /**/
+	/*******************************/
+
+	.lined.row >
+	:not(:last-child) {
+		margin-right: 9px;
+		padding-right: 9px;
+		border-right: 2px solid #aaa;
+	}
+
+	.lined.column >
+	:not(:last-child) {
+		margin-bottom: 9px;
+		padding-bottom: 9px;
+		border-bottom: 2px solid #aaa;
+	}
+
+	main > :not(:last-child) {
+		margin-bottom: 8px;
+		padding-bottom: 8px;
+		border-bottom: 4px solid #000;
+	}
+
+	body {
+		margin: 20px;
+	}
+
+	nav#menu {
+		min-width: 200px;
+	}
+
+	nav#menu a {
+		display: block;
+		padding: 5px;
+		background: #CCE;
+		border-radius: 5px;
+	}
+	nav#menu a:not(:first-child) {
+		margin-top: 30px;
+	}
+
+	article.project header {
+		padding-bottom: 9px;
+		margin-bottom: 9px;
+		border-bottom: 2px solid #aaa;
+	}
+	section.tasks:first-child {
+		flex-grow: 1;
+	}
+	section.tasks:first-child > * {
+		flex-grow: 1;
+	}
+
+	section.tasks {
+		width: 400px;
+	}
+
+	article > .checkbox {
+		background: red;
+		height: 40px;
+		width: 40px;
+		float: left;
+		margin-right: 5px;
+	}
+
+	article > .checkbox.checked {
+		background: blue;
+	}
+
+	article.note {
+		line-height: 1.5em;
+	}
+/*
+	article.note:hover:after {
+		content: 'click to edit';
+		background: black;
+		color: white;
+		opacity: 0.7;
+		display: block;
+		padding: 2px 22px;
+		font-size: 0.8rem;
+		line-height: 1em;
+		float: right;
+	}
+*/
+	
+	article:before {
+		content: '';
+		display: block;
+		height: 20px;
+		width: 25px;
+		float: right;
+		background-image: url('../img/sky_red_icon.png');
+		background-repeat: no-repeat;
+		background-position: top right;
+		line-height: 20px;
+	}
+
+	article.saved:before {
+		background-image: url('../img/sky_green_icon.png');
+	}
+
+	main > * {
+		display: none;
+	}
+
+	main > .active {
+		display: block;
+	}
+
+</style>
+<script>
+	function init(){
+		document.getElementById('noteEditor').open = function(text, projectID){
+			this.innerHTML = text
+			this.UIcontext = {projectID: projectID}
+		}
+		document.getElementById('noteEditor').onclick = function(){
+			changeTab(document.getElementById(this.UIcontext.projectID))
+		}
+		var projects = document.getElementsByClassName('project')
+		for(var i = 0; i < projects.length; i++){
+			var id = projects[i].id
+			var notes = projects[i].getElementsByClassName('note')
+			for(var j = 0; j < notes.length; j++){
+				notes[j].onclick = (function(note, projectID){
+					return function(){editNote(note, projectID)}
+				})(notes[j], id)
+			}
+		}
+		var menuitems = document.getElementById('menu').getElementsByTagName('a')
+		for(var i = 0; i < menuitems.length; i++){
+			menuitems[i].onclick = function(e){
+				var target = this.getAttribute('data-target')
+				changeTab(document.getElementById(target))
+				e.preventDefault()
+			}
+		}
+		changeTab()
+	}
+
+	function editNote(noteElement, projectID){
+		var text = noteElement.getElementsByTagName('p')[0].firstChild.data
+		var noteEditor = document.getElementById('noteEditor')
+		noteEditor.open(text, projectID)
+		changeTab(noteEditor)
+	}
+	function changeTab(tab, parent){
+		var parent = parent || document.body
+		var activetabs = parent.getElementsByClassName('active')
+		for(var i = 0; i < activetabs.length; i++){
+			activetabs[i].classList.remove('active')
+		}
+		(tab || parent.getElementsByClassName('default')[0]).classList.add('active')
+	}
+</script>
+<body>
+<div class="row lined">
+<nav id="menu">
+	<a href="#projectA" data-target='projectA'>Project A: Mixed data</a>
+	<a href="#projectB" data-target='projectB'>Project B: Textiness</a>
+	<a href="#projectC" data-target='projectC'>Project C: Taskyness</a>
+</nav>
+<main>
+<div id="cover" class="default"><h1>Welcome to Steward! This is a UI prototype.</h1></div>
+<div id="projectEditor"></div>
+<div id="noteEditor"></div>
+<div id="taskEditor"></div>
+<article class="project mixed" id="projectA">
+	<header>
+		<h1>Project A</h1>
+		<p>project description</p>
+	</header>
+	<div class="row lined">
+	<section class="notes column">
+		<article class="note saved">
+			<p>1 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut gravida lorem. Ut turpis felis, pulvinar a semper sed, adipiscing id dolor. Pellentesque auctor nisi id magna consequat sagittis. Curabitur dapibus enim sit amet elit pharetra tincidunt feugiat nisl imperdiet. Ut convallis libero in urna ultrices accumsan. Donec sed odio eros. Donec viverra mi quis quam pulvinar at malesuada arcu rhoncus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In rutrum accumsan ultricies. Mauris vitae nisi at sem facilisis semper ac in est.
+		</article>
+		<article class="note">
+			<h1>Note title</h1>
+			<p>2 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut gravida lorem. Ut turpis felis, pulvinar a semper sed, adipiscing id dolor. Pellentesque auctor nisi id magna consequat sagittis. Curabitur dapibus enim sit amet elit pharetra tincidunt feugiat nisl imperdiet. Ut convallis libero in urna ultrices accumsan. Donec sed odio eros. Donec viverra mi quis quam pulvinar at malesuada arcu rhoncus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In rutrum accumsan ultricies. Mauris vitae nisi at sem facilisis semper ac in est.
+		</article>
+		<article class="note">
+			<p>3 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut gravida lorem. Ut turpis felis, pulvinar a semper sed, adipiscing id dolor. Pellentesque auctor nisi id magna consequat sagittis. Curabitur dapibus enim sit amet elit pharetra tincidunt feugiat nisl imperdiet. Ut convallis libero in urna ultrices accumsan. Donec sed odio eros. Donec viverra mi quis quam pulvinar at malesuada arcu rhoncus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In rutrum accumsan ultricies. Mauris vitae nisi at sem facilisis semper ac in est.
+		</article>
+	</section>
+	<section class="tasks column">
+		<article>
+			<div class="checkbox"></div>
+			<h1># Todo: Improve task interface</h1>
+			<p>checkbox something?</p>
+		</article>
+		<article>
+			<div class="checkbox"></div>
+			<h1># Todo: Make edit-interface</h1>
+			<p>overlay / new page?</p>
+		</article>
+		<article>
+			<div class="checkbox"></div>
+			<h1># Todo: When should a post save?</h1>
+			<p>on edit, on button-click?</p>
+		</article>
+	</section>
+	</div>
+</article>
+<article class="project" id="projectB">
+	<header>
+		<h1>Project B</h1>
+		<p>project description</p>
+	</header>
+	<div class="row lined">
+	<section class="notes column">
+		<article class="note">
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut gravida lorem. Ut turpis felis, pulvinar a semper sed, adipiscing id dolor. Pellentesque auctor nisi id magna consequat sagittis. Curabitur dapibus enim sit amet elit pharetra tincidunt feugiat nisl imperdiet. Ut convallis libero in urna ultrices accumsan. Donec sed odio eros. Donec viverra mi quis quam pulvinar at malesuada arcu rhoncus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In rutrum accumsan ultricies. Mauris vitae nisi at sem facilisis semper ac in est.</p>
+		</article>
+		<article class="note">
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut gravida lorem. Ut turpis felis, pulvinar a semper sed, adipiscing id dolor. Pellentesque auctor nisi id magna consequat sagittis. Curabitur dapibus enim sit amet elit pharetra tincidunt feugiat nisl imperdiet. Ut convallis libero in urna ultrices accumsan. Donec sed odio eros. Donec viverra mi quis quam pulvinar at malesuada arcu rhoncus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In rutrum accumsan ultricies. Mauris vitae nisi at sem facilisis semper ac in est.</p>
+		</article>
+		<article class="note">
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut gravida lorem. Ut turpis felis, pulvinar a semper sed, adipiscing id dolor. Pellentesque auctor nisi id magna consequat sagittis. Curabitur dapibus enim sit amet elit pharetra tincidunt feugiat nisl imperdiet. Ut convallis libero in urna ultrices accumsan. Donec sed odio eros. Donec viverra mi quis quam pulvinar at malesuada arcu rhoncus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In rutrum accumsan ultricies. Mauris vitae nisi at sem facilisis semper ac in est.</p>
+		</article>
+	</section>
+	
+	</div>
+</article>
+<article class="project" id="projectC">
+	<header>
+		<h1>Project C</h1>
+		<p>project description</p>
+	</header>
+	<div class="row lined">
+	<section class="tasks column">
+		<article>
+			<div class="checkbox"></div>
+			<h1># Todo: Tasky taskiness</h1>
+			<p>description</p>
+		</article>
+		<article>
+			<div class="checkbox"></div>
+			<h1># Todo: Tasky taskiness</h1>
+			<p>description</p>
+		</article>
+		<article>
+			<div class="checkbox"></div>
+			<h1># Todo: Tasky taskiness</h1>
+			<p>description</p>
+		</article>
+		<article>
+			<div class="checkbox"></div>
+			<h1># Todo: Tasky taskiness</h1>
+			<p>description</p>
+		</article>
+		<article>
+			<div class="checkbox"></div>
+			<h1># Todo: Tasky taskiness</h1>
+			<p>description</p>
+		</article>
+		<article>
+			<div class="checkbox"></div>
+			<h1># Todo: Tasky taskiness</h1>
+			<p>description</p>
+		</article>
+	</section>
+	</div>
+</article>
+</main>
+</div>
+<script>init()</script>
+</body>
+</html>
