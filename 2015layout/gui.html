@@ -38,48 +38,34 @@
 	/**/  }                      /**/
 	/*******************************/
 
-	.lined.row >
-	:not(:last-child) {
-		margin-right: 9px;
-		padding-right: 9px;
-		border-right: 2px solid #aaa;
+	body > header {
+		background: green;
+		padding: 5px 20px;
+		font-family: sans-serif;
+	}
+	body > header > * {
+		display: inline-block;
+	}
+	body > header > :not(:first-child) {
+		margin-left: 10px;
 	}
 
-	.lined.column >
-	:not(:last-child) {
-		margin-bottom: 9px;
-		padding-bottom: 9px;
-		border-bottom: 2px solid #aaa;
-	}
-
-	main > :not(:last-child) {
-		margin-bottom: 8px;
-		padding-bottom: 8px;
-		border-bottom: 4px solid #000;
-	}
-
-	body {
+	main {
 		margin: 20px;
 	}
 
-	nav#menu {
-		min-width: 200px;
-	}
-
-	nav#menu a {
+	#menu a {
 		display: block;
 		padding: 5px;
 		background: #CCE;
-		border-radius: 5px;
+		white-space: nowrap;
 	}
-	nav#menu a:not(:first-child) {
+	#menu a:not(:first-child) {
 		margin-top: 30px;
 	}
 
 	article.project header {
-		padding-bottom: 9px;
-		margin-bottom: 9px;
-		border-bottom: 2px solid #aaa;
+		padding-bottom: 20px;
 	}
 	section.tasks:first-child {
 		flex-grow: 1;
@@ -107,19 +93,6 @@
 	article.note {
 		line-height: 1.5em;
 	}
-/*
-	article.note:hover:after {
-		content: 'click to edit';
-		background: black;
-		color: white;
-		opacity: 0.7;
-		display: block;
-		padding: 2px 22px;
-		font-size: 0.8rem;
-		line-height: 1em;
-		float: right;
-	}
-*/
 	
 	article:before {
 		content: '';
@@ -147,6 +120,12 @@
 
 </style>
 <script>
+	function linkToTab(e){
+		var target = this.getAttribute('data-target')
+		changeTab(document.getElementById(target))
+		e.preventDefault()
+	}
+
 	function init(){
 		document.getElementById('noteEditor').open = function(text, projectID){
 			this.innerHTML = text
@@ -167,12 +146,9 @@
 		}
 		var menuitems = document.getElementById('menu').getElementsByTagName('a')
 		for(var i = 0; i < menuitems.length; i++){
-			menuitems[i].onclick = function(e){
-				var target = this.getAttribute('data-target')
-				changeTab(document.getElementById(target))
-				e.preventDefault()
-			}
+			menuitems[i].onclick = linkToTab
 		}
+		document.getElementById('menu-link').onclick = linkToTab
 		changeTab()
 	}
 
@@ -192,14 +168,16 @@
 	}
 </script>
 <body>
-<div class="row lined">
-<nav id="menu">
+<header>
+	<h1>Steward</h1>
+	<nav><a id="menu-link" href="#menu" data-target='menu'>Menu</a></nav>
+</header>
+<main>
+<div id="menu" class="default">
 	<a href="#projectA" data-target='projectA'>Project A: Mixed data</a>
 	<a href="#projectB" data-target='projectB'>Project B: Textiness</a>
-	<a href="#projectC" data-target='projectC'>Project C: Taskyness</a>
-</nav>
-<main>
-<div id="cover" class="default"><h1>Welcome to Steward! This is a UI prototype.</h1></div>
+	<a href="#projectC" data-target='projectC'>Project C: Taskyness</a>	
+</div>
 <div id="projectEditor"></div>
 <div id="noteEditor"></div>
 <div id="taskEditor"></div>
@@ -301,7 +279,6 @@
 	</div>
 </article>
 </main>
-</div>
 <script>init()</script>
 </body>
 </html>
