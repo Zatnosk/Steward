@@ -8,7 +8,6 @@
 	* {
 		margin: 0px;
 		padding: 0px;
-		//background-color: rgba(0,0,0,0.1);
 	}
 
 	/**** flex-box related *********/
@@ -19,7 +18,7 @@
 	/**/                         /**/
 	/**/  .row >                 /**/
 	/**/  :not(:last-child) {    /**/
-	/**/    margin-right: 20px;  /**/
+	/**/    margin-right: 60px;  /**/
 	/**/  }                      /**/
 	/**/                         /**/
 	/**/  .column {              /**/
@@ -29,10 +28,9 @@
 	/**/                         /**/
 	/**/  .column >              /**/
 	/**/  :not(:last-child) {    /**/
-	/**/    margin-bottom: 20px; /**/
+	/**/    margin-bottom: 40px; /**/
 	/**/  }                      /**/
 	/**/                         /**/
-	/**/  main,                  /**/
 	/**/  section.notes{         /**/
 	/**/    flex-grow: 1;        /**/
 	/**/  }                      /**/
@@ -41,10 +39,12 @@
 	body > header {
 		background: green;
 		padding: 5px 20px;
+		height: 40px;
 		font-family: sans-serif;
 	}
 	body > header > * {
 		display: inline-block;
+		line-height: 40px;
 	}
 	body > header > :not(:first-child) {
 		margin-left: 10px;
@@ -53,29 +53,33 @@
 	main {
 		margin: 20px;
 	}
+	main > * {
+		display: none;
+	}
+	main > .active {
+		display: block;
+	}
 
+	#menu {
+		margin: -20px;
+		font-size: 0.8rem;
+	}
 	#menu a {
 		display: block;
-		padding: 5px;
-		background: #CCE;
-		white-space: nowrap;
+		padding: 30px 20px;
+		text-decoration: none;
+		color: black;
 	}
-	#menu a:not(:first-child) {
-		margin-top: 30px;
+	#menu a:hover {
+		background: #ccc;
 	}
 
 	article.project header {
-		padding-bottom: 20px;
-	}
-	section.tasks:first-child {
-		flex-grow: 1;
-	}
-	section.tasks:first-child > * {
-		flex-grow: 1;
+		padding-bottom: 40px;
 	}
 
 	section.tasks {
-		width: 400px;
+		width: 600px;
 	}
 
 	article > .checkbox {
@@ -93,29 +97,51 @@
 	article.note {
 		line-height: 1.5em;
 	}
-	
-	article:before {
-		content: '';
+
+	/************************/
+	/*      TYPOGRAPHY      */
+	/************************/
+	#menu a, article.project header {
+		font-family: sans-serif;
+	}
+	#menu a h1, article.project header h1 {
+		font-size: 1.4em;
+		font-variant: small-caps;
+	}
+	#menu a p, article.project header p {
+
+	}
+	/*********************/
+	/*      EDITORS      */
+	/*********************/
+	.editor {
+		position: absolute;
+		top: 70px;
+		bottom: 50px;
+		left: 20px;
+		right: 20px;
+	}
+	.editor > div{
+		height: 100%;
+		width: 100%;
+		display: flex;
+		flex-flow: column;
+	}
+	.editor input,
+	.editor textarea{
 		display: block;
-		height: 20px;
-		width: 25px;
-		float: right;
-		background-image: url('../img/sky_red_icon.png');
-		background-repeat: no-repeat;
-		background-position: top right;
-		line-height: 20px;
+		width: 100%;
+		box-sizing: border-box;
+		padding: 5px;
+		margin-bottom: 10px;
+		font-size: 1.2em;
 	}
-
-	article.saved:before {
-		background-image: url('../img/sky_green_icon.png');
+	.editor textarea {
+		flex-grow: 1;
+		resize: none;
 	}
-
-	main > * {
-		display: none;
-	}
-
-	main > .active {
-		display: block;
+	.editor button {
+		height: 50px;
 	}
 
 </style>
@@ -126,13 +152,27 @@
 		e.preventDefault()
 	}
 
+	function closeEditor(editor){
+		changeTab(document.getElementById(editor.UIcontext.projectID))
+	}
+
 	function init(){
-		document.getElementById('noteEditor').open = function(text, projectID){
-			this.innerHTML = text
+		var noteEditor = document.getElementById('noteEditor')
+		var taskEditor = document.getElementById('taskEditor')
+		noteEditor.open = function(title, text, projectID){
+			var input = this.getElementsByTagName('input')[0]
+			input.value = title
+			var textarea = this.getElementsByTagName('textarea')[0]
+			textarea.value = text
 			this.UIcontext = {projectID: projectID}
+			changeTab(this)
 		}
-		document.getElementById('noteEditor').onclick = function(){
-			changeTab(document.getElementById(this.UIcontext.projectID))
+		taskEditor.open = function(title, description, projectID){
+			var inputs = this.getElementsByTagName('input')
+			inputs[0].value = title
+			inputs[1].value = description
+			this.UIcontext = {projectID: projectID}
+			changeTab(this)
 		}
 		var projects = document.getElementsByClassName('project')
 		for(var i = 0; i < projects.length; i++){
@@ -142,6 +182,12 @@
 				notes[j].onclick = (function(note, projectID){
 					return function(){editNote(note, projectID)}
 				})(notes[j], id)
+			}
+			var tasks = projects[i].getElementsByClassName('task')
+			for(var k = 0; k < tasks.length; k++){
+				tasks[k].onclick = (function(task, projectID){
+					return function(){editTask(task, projectID)}
+				})(tasks[k], id)
 			}
 		}
 		var menuitems = document.getElementById('menu').getElementsByTagName('a')
@@ -153,10 +199,22 @@
 	}
 
 	function editNote(noteElement, projectID){
+		var title = noteElement.getElementsByTagName('h1')[0]
 		var text = noteElement.getElementsByTagName('p')[0].firstChild.data
 		var noteEditor = document.getElementById('noteEditor')
-		noteEditor.open(text, projectID)
-		changeTab(noteEditor)
+		if(title){
+			noteEditor.open(title.firstChild.data, text, projectID)
+		} else {
+			noteEditor.open('', text, projectID)
+		}
+		
+	}
+	function editTask(taskElement, projectID){
+		var title = taskElement.getElementsByTagName('h1')[0].firstChild.data
+		var description = taskElement.getElementsByTagName('p')[0].firstChild.data
+		var taskEditor = document.getElementById('taskEditor')
+		taskEditor.open(title, description, projectID)
+		changeTab(taskEditor)
 	}
 	function changeTab(tab, parent){
 		var parent = parent || document.body
@@ -174,17 +232,29 @@
 </header>
 <main>
 <div id="menu" class="default">
-	<a href="#projectA" data-target='projectA'>Project A: Mixed data</a>
-	<a href="#projectB" data-target='projectB'>Project B: Textiness</a>
-	<a href="#projectC" data-target='projectC'>Project C: Taskyness</a>	
+	<a href="#projectA" data-target='projectA'><h1>Project A: Mixed data</h1><p>Description bla bla, lorem ipsum..</p></a>
+	<a href="#projectB" data-target='projectB'><h1>Project B: Textiness</h1><p>Description of something else..</p></a>
+	<a href="#projectC" data-target='projectC'><h1>Project C: Taskyness</h1><p>Description blubba wubba, hubba bubba.</p></a>	
 </div>
 <div id="projectEditor"></div>
-<div id="noteEditor"></div>
-<div id="taskEditor"></div>
+<div id="noteEditor" class="editor">
+	<div>
+		<input>
+		<textarea></textarea>
+		<button onClick="closeEditor(this.parentElement.parentElement)">[X] Close</button>
+	</div>
+</div>
+<div id="taskEditor" class="editor">
+	<div>
+		<input>
+		<input>
+		<button href="#" onClick="closeEditor(this.parentElement.parentElement)">[X] Close</button>
+	</div>
+</div>
 <article class="project mixed" id="projectA">
 	<header>
 		<h1>Project A</h1>
-		<p>project description</p>
+		<p>Description bla bla, lorem ipsum..</p>
 	</header>
 	<div class="row lined">
 	<section class="notes column">
@@ -200,17 +270,17 @@
 		</article>
 	</section>
 	<section class="tasks column">
-		<article>
+		<article class="task">
 			<div class="checkbox"></div>
 			<h1># Todo: Improve task interface</h1>
 			<p>checkbox something?</p>
 		</article>
-		<article>
+		<article class="task">
 			<div class="checkbox"></div>
 			<h1># Todo: Make edit-interface</h1>
 			<p>overlay / new page?</p>
 		</article>
-		<article>
+		<article class="task">
 			<div class="checkbox"></div>
 			<h1># Todo: When should a post save?</h1>
 			<p>on edit, on button-click?</p>
@@ -221,7 +291,7 @@
 <article class="project" id="projectB">
 	<header>
 		<h1>Project B</h1>
-		<p>project description</p>
+		<p>Description of something else..</p>
 	</header>
 	<div class="row lined">
 	<section class="notes column">
@@ -241,36 +311,36 @@
 <article class="project" id="projectC">
 	<header>
 		<h1>Project C</h1>
-		<p>project description</p>
+		<p>Description blubba wubba, hubba bubba.</p>
 	</header>
 	<div class="row lined">
 	<section class="tasks column">
-		<article>
+		<article class="task">
 			<div class="checkbox"></div>
 			<h1># Todo: Tasky taskiness</h1>
 			<p>description</p>
 		</article>
-		<article>
+		<article class="task">
 			<div class="checkbox"></div>
 			<h1># Todo: Tasky taskiness</h1>
 			<p>description</p>
 		</article>
-		<article>
+		<article class="task">
 			<div class="checkbox"></div>
 			<h1># Todo: Tasky taskiness</h1>
 			<p>description</p>
 		</article>
-		<article>
+		<article class="task">
 			<div class="checkbox"></div>
 			<h1># Todo: Tasky taskiness</h1>
 			<p>description</p>
 		</article>
-		<article>
+		<article class="task">
 			<div class="checkbox"></div>
 			<h1># Todo: Tasky taskiness</h1>
 			<p>description</p>
 		</article>
-		<article>
+		<article class="task">
 			<div class="checkbox"></div>
 			<h1># Todo: Tasky taskiness</h1>
 			<p>description</p>
