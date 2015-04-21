@@ -157,8 +157,17 @@
 	}
 
 	function init(){
+		var projectEditor = document.getElementById('projectEditor')
 		var noteEditor = document.getElementById('noteEditor')
 		var taskEditor = document.getElementById('taskEditor')
+		projectEditor.open = function(title, text, projectID){
+			var input = this.getElementsByTagName('input')[0]
+			input.value = title
+			var textarea = this.getElementsByTagName('textarea')[0]
+			textarea.value = text
+			this.UIcontext = {projectID: projectID}
+			changeTab(this)
+		}
 		noteEditor.open = function(title, text, projectID){
 			var input = this.getElementsByTagName('input')[0]
 			input.value = title
@@ -177,6 +186,11 @@
 		var projects = document.getElementsByClassName('project')
 		for(var i = 0; i < projects.length; i++){
 			var id = projects[i].id
+			var header = projects[i].getElementsByTagName('header')[0]
+			header.onclick = (function(project, projectID){
+				return function(){editProject(project, projectID)}
+			})(projects[i], id)
+			console.log(header, header.onclick)
 			var notes = projects[i].getElementsByClassName('note')
 			for(var j = 0; j < notes.length; j++){
 				notes[j].onclick = (function(note, projectID){
@@ -198,6 +212,13 @@
 		changeTab()
 	}
 
+	function editProject(projectElement, projectID){
+		var headerElement = projectElement.getElementsByTagName('header')[0]
+		var title = headerElement.getElementsByTagName('h1')[0].firstChild.data
+		var text = headerElement.getElementsByTagName('p')[0].firstChild.data
+		var projectEditor = document.getElementById('projectEditor')
+		projectEditor.open(title, text, projectID)
+	}
 	function editNote(noteElement, projectID){
 		var title = noteElement.getElementsByTagName('h1')[0]
 		var text = noteElement.getElementsByTagName('p')[0].firstChild.data
@@ -206,8 +227,7 @@
 			noteEditor.open(title.firstChild.data, text, projectID)
 		} else {
 			noteEditor.open('', text, projectID)
-		}
-		
+		}	
 	}
 	function editTask(taskElement, projectID){
 		var title = taskElement.getElementsByTagName('h1')[0].firstChild.data
@@ -236,9 +256,17 @@
 	<a href="#projectB" data-target='projectB'><h1>Project B: Textiness</h1><p>Description of something else..</p></a>
 	<a href="#projectC" data-target='projectC'><h1>Project C: Taskyness</h1><p>Description blubba wubba, hubba bubba.</p></a>	
 </div>
-<div id="projectEditor"></div>
+<div id="projectEditor" class="editor">
+	<div>
+		<h1>Edit project</h1>
+		<input>
+		<textarea></textarea>
+		<button onClick="closeEditor(this.parentElement.parentElement)">[X] Close</button>
+	</div>
+</div>
 <div id="noteEditor" class="editor">
 	<div>
+		<h1>Edit note</h1>
 		<input>
 		<textarea></textarea>
 		<button onClick="closeEditor(this.parentElement.parentElement)">[X] Close</button>
@@ -246,6 +274,7 @@
 </div>
 <div id="taskEditor" class="editor">
 	<div>
+		<h1>Edit task</h1>
 		<input>
 		<input>
 		<button href="#" onClick="closeEditor(this.parentElement.parentElement)">[X] Close</button>
