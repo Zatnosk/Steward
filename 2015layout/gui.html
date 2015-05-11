@@ -9,49 +9,19 @@
 		margin: 0px;
 		padding: 0px;
 	}
-
-	/**** flex-box related *********/
-	/**/  .row {                 /**/
-	/**/    display: flex;       /**/
-	/**/    flex-flow: row;      /**/
-	/**/  }                      /**/
-	/**/                         /**/
-	/**/  .row >                 /**/
-	/**/  :not(:last-child) {    /**/
-	/**/    margin-right: 60px;  /**/
-	/**/  }                      /**/
-	/**/                         /**/
-	/**/  .column {              /**/
-	/**/    display: flex;       /**/
-	/**/    flex-flow: column;   /**/
-	/**/  }                      /**/
-	/**/                         /**/
-	/**/  .column >              /**/
-	/**/  :not(:last-child) {    /**/
-	/**/    margin-bottom: 40px; /**/
-	/**/  }                      /**/
-	/**/                         /**/
-	/**/  section.notes{         /**/
-	/**/    flex-grow: 1;        /**/
-	/**/  }                      /**/
-	/*******************************/
-
+	html, .editor > div {
+		min-height: 100%;
+	}
 	body > header {
 		background: green;
-		padding: 5px 20px;
-		height: 40px;
-		font-family: sans-serif;
 	}
 	body > header > * {
-		display: inline-block;
-		line-height: 40px;
-	}
-	body > header > :not(:first-child) {
-		margin-left: 10px;
+		line-height: 2rem;
 	}
 
 	main {
-		margin: 20px;
+		background: #eee;
+		padding: 20px;
 	}
 	main > * {
 		display: none;
@@ -67,41 +37,86 @@
 	#menu a {
 		display: block;
 		padding: 30px 20px;
-		text-decoration: none;
-		color: black;
 	}
 	#menu a:hover {
 		background: #ccc;
 	}
 
-	article.project header {
-		padding-bottom: 40px;
-	}
+	
 
-	section.tasks {
-		width: 600px;
+	/***************************/
+	/*      VISUAL DESIGN      */
+	/***************************/
+	.editor > div,
+	.project > div {
+		max-width: 800px;
+		margin: auto;
 	}
-
-	article > .checkbox {
+	.project > div > :not(:first-child):not(.tool) {
+		margin-top: 20px;
+	}
+	body > header > :not(:first-child), 
+	.task > :not(:first-child) {
+		margin-left: 20px;
+	}
+	.task > .checkbox {
 		background: red;
 		height: 40px;
 		width: 40px;
-		float: left;
-		margin-right: 5px;
+		border-radius: 15px;
 	}
-
-	article > .checkbox.checked {
+	.task > .checkbox.checked {
 		background: blue;
 	}
+	.tool > .group {
+		margin-left: 20px;
+	}
+	header,
+	.task, .note,
+	.editor input, .editor textarea {
+		padding: 10px 20px;
+	}
+	.task, .note,
+	.editor input, .editor textarea {
+		background: white;
+		border-radius: 5px;
+	}
+	.project header {
+		background: white;
+		border-radius: 5px 5px 0 0;
+	}
+	.tool {
+		background: #ccc;
+		padding: 5px 20px;
+		border-radius: 0 0 5px 5px;
+	}
 
-	article.note {
-		line-height: 1.5em;
+	/**********************/
+	/*      FLEX BOX      */
+	/**********************/
+	html, body, main,
+	article.project > div,
+	.editor > div {
+		display: flex;
+		flex-flow: column;
+	}
+	body > header,
+	article.task,
+	.tool {
+		display: flex;
+		flex-flow: row;
+	}
+	body, main,
+	article.task > div:not(.checkbox),
+	.editor,
+	.editor textarea{
+		flex-grow: 1;
 	}
 
 	/************************/
 	/*      TYPOGRAPHY      */
 	/************************/
-	#menu a, article.project header {
+	#menu a, header {
 		font-family: sans-serif;
 	}
 	#menu a h1, article.project header h1 {
@@ -111,37 +126,37 @@
 	#menu a p, article.project header p {
 
 	}
-	/*********************/
-	/*      EDITORS      */
-	/*********************/
-	.editor {
-		position: absolute;
-		top: 70px;
-		bottom: 50px;
-		left: 20px;
-		right: 20px;
+	article.note {
+		line-height: 1.5em;
 	}
-	.editor > div{
-		height: 100%;
-		width: 100%;
-		display: flex;
-		flex-flow: column;
-	}
-	.editor input,
-	.editor textarea{
-		display: block;
-		width: 100%;
-		box-sizing: border-box;
-		padding: 5px;
-		margin-bottom: 10px;
+	input, textarea {
 		font-size: 1.2em;
 	}
-	.editor textarea {
-		flex-grow: 1;
+	.tool {
+		font-size: 0.6em;
+		font-family: sans-serif;
+		text-transform: uppercase;
+	}
+	.tool a, #menu a, header a {
+		text-decoration: none;
+		color: black;
+	}
+	.tool a.selected {
+		text-decoration: underline;
+	}
+
+	/********************/
+	/*      INPUTS      */
+	/********************/
+	input, textarea{
+		margin-top: 10px;
+		border: 0px;
+	}
+	textarea {
 		resize: none;
 	}
-	.editor button {
-		height: 50px;
+	button {
+		padding: 5px;
 	}
 
 </style>
@@ -247,8 +262,7 @@
 </script>
 <body>
 <header>
-	<h1>Steward</h1>
-	<nav><a id="menu-link" href="#menu" data-target='menu'>Menu</a></nav>
+	<a id="menu-link" href="#menu" data-target='menu'><h1>Steward</h1></a>
 </header>
 <main>
 <div id="menu" class="default">
@@ -258,37 +272,73 @@
 </div>
 <div id="projectEditor" class="editor">
 	<div>
-		<h1>Edit project</h1>
+		<div>
+			<button disabled>Save &amp; close</button>
+			<button onClick="closeEditor(this.parentElement.parentElement.parentElement)">Close</button>
+		</div>
 		<input>
 		<textarea></textarea>
-		<button onClick="closeEditor(this.parentElement.parentElement)">[X] Close</button>
 	</div>
 </div>
 <div id="noteEditor" class="editor">
 	<div>
-		<h1>Edit note</h1>
+		<div>
+			<button disabled>Save &amp; close</button>
+			<button onClick="closeEditor(this.parentElement.parentElement.parentElement)">Close</button>
+		</div>
 		<input>
 		<textarea></textarea>
-		<button onClick="closeEditor(this.parentElement.parentElement)">[X] Close</button>
 	</div>
 </div>
 <div id="taskEditor" class="editor">
 	<div>
-		<h1>Edit task</h1>
+		<div>
+			<button disabled>Save &amp; close</button>
+			<button onClick="closeEditor(this.parentElement.parentElement.parentElement)">Close</button>
+		</div>
 		<input>
 		<input>
-		<button href="#" onClick="closeEditor(this.parentElement.parentElement)">[X] Close</button>
 	</div>
 </div>
-<article class="project mixed" id="projectA">
-	<header>
-		<h1>Project A</h1>
-		<p>Description bla bla, lorem ipsum..</p>
-	</header>
-	<div class="row lined">
-	<section class="notes column">
+<article class="project" id="projectA">
+	<div>
+		<header>
+			<h1>Project A</h1>
+			<p>Description bla bla, lorem ipsum..</p>
+		</header>
+		<div class="tool">
+			<label>Sort:</label>
+			<div class="group">
+				<a href="#">Creation</a> |
+				<a href="#" class="selected">Latest edit</a>
+			</div>
+			<div class="group">
+				<a href="#">Notes first</a> |
+				<a href="#">Tasks first</a> |
+				<a href="#" class="selected">Interspersed</a>
+			</div>
+		</div>
+		<article class="task">
+			<div class="checkbox"></div>
+			<div>
+				<h1># Todo: Improve task interface</h1>
+				<p>checkbox something?</p>
+			</div>
+		</article>
 		<article class="note saved">
 			<p>1 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut gravida lorem. Ut turpis felis, pulvinar a semper sed, adipiscing id dolor. Pellentesque auctor nisi id magna consequat sagittis. Curabitur dapibus enim sit amet elit pharetra tincidunt feugiat nisl imperdiet. Ut convallis libero in urna ultrices accumsan. Donec sed odio eros. Donec viverra mi quis quam pulvinar at malesuada arcu rhoncus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In rutrum accumsan ultricies. Mauris vitae nisi at sem facilisis semper ac in est.
+		</article>
+		<article class="task">
+			<div class="checkbox"></div>
+			<div>
+				<h1># Todo: Make edit-interface</h1>
+				<p>overlay / new page?</p>
+			</div>
+		</article>
+		<article class="task">
+			<div class="checkbox"></div>
+			<div><h1># Todo: When should a post save?</h1>
+			<p>on edit, on button-click?</p></div>
 		</article>
 		<article class="note">
 			<h1>Note title</h1>
@@ -297,33 +347,26 @@
 		<article class="note">
 			<p>3 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut gravida lorem. Ut turpis felis, pulvinar a semper sed, adipiscing id dolor. Pellentesque auctor nisi id magna consequat sagittis. Curabitur dapibus enim sit amet elit pharetra tincidunt feugiat nisl imperdiet. Ut convallis libero in urna ultrices accumsan. Donec sed odio eros. Donec viverra mi quis quam pulvinar at malesuada arcu rhoncus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In rutrum accumsan ultricies. Mauris vitae nisi at sem facilisis semper ac in est.
 		</article>
-	</section>
-	<section class="tasks column">
-		<article class="task">
-			<div class="checkbox"></div>
-			<h1># Todo: Improve task interface</h1>
-			<p>checkbox something?</p>
-		</article>
-		<article class="task">
-			<div class="checkbox"></div>
-			<h1># Todo: Make edit-interface</h1>
-			<p>overlay / new page?</p>
-		</article>
-		<article class="task">
-			<div class="checkbox"></div>
-			<h1># Todo: When should a post save?</h1>
-			<p>on edit, on button-click?</p>
-		</article>
-	</section>
 	</div>
 </article>
 <article class="project" id="projectB">
-	<header>
-		<h1>Project B</h1>
-		<p>Description of something else..</p>
-	</header>
-	<div class="row lined">
-	<section class="notes column">
+	<div>
+		<header>
+			<h1>Project B</h1>
+			<p>Description of something else..</p>
+		</header>
+		<div class="tool">
+			<label>Sort:</label>
+			<div class="group">
+				<a href="#">Creation</a> |
+				<a href="#" class="selected">Latest edit</a>
+			</div>
+			<div class="group">
+				<a href="#">Notes first</a> |
+				<a href="#">Tasks first</a> |
+				<a href="#" class="selected">Interspersed</a>
+			</div>
+		</div>
 		<article class="note">
 			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut gravida lorem. Ut turpis felis, pulvinar a semper sed, adipiscing id dolor. Pellentesque auctor nisi id magna consequat sagittis. Curabitur dapibus enim sit amet elit pharetra tincidunt feugiat nisl imperdiet. Ut convallis libero in urna ultrices accumsan. Donec sed odio eros. Donec viverra mi quis quam pulvinar at malesuada arcu rhoncus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In rutrum accumsan ultricies. Mauris vitae nisi at sem facilisis semper ac in est.</p>
 		</article>
@@ -333,48 +376,56 @@
 		<article class="note">
 			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut gravida lorem. Ut turpis felis, pulvinar a semper sed, adipiscing id dolor. Pellentesque auctor nisi id magna consequat sagittis. Curabitur dapibus enim sit amet elit pharetra tincidunt feugiat nisl imperdiet. Ut convallis libero in urna ultrices accumsan. Donec sed odio eros. Donec viverra mi quis quam pulvinar at malesuada arcu rhoncus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In rutrum accumsan ultricies. Mauris vitae nisi at sem facilisis semper ac in est.</p>
 		</article>
-	</section>
-	
 	</div>
 </article>
 <article class="project" id="projectC">
-	<header>
-		<h1>Project C</h1>
-		<p>Description blubba wubba, hubba bubba.</p>
-	</header>
-	<div class="row lined">
-	<section class="tasks column">
+	<div>
+		<header>
+			<h1>Project C</h1>
+			<p>Description blubba wubba, hubba bubba.</p>
+		</header>
+		<div class="tool">
+			<label>Sort:</label>
+			<div class="group">
+				<a href="#">Creation</a> |
+				<a href="#" class="selected">Latest edit</a>
+			</div>
+			<div class="group">
+				<a href="#">Notes first</a> |
+				<a href="#">Tasks first</a> |
+				<a href="#" class="selected">Interspersed</a>
+			</div>
+		</div>
 		<article class="task">
 			<div class="checkbox"></div>
-			<h1># Todo: Tasky taskiness</h1>
-			<p>description</p>
+			<div><h1># Todo: Tasky taskiness</h1>
+			<p>description</p></div>
 		</article>
 		<article class="task">
 			<div class="checkbox"></div>
-			<h1># Todo: Tasky taskiness</h1>
-			<p>description</p>
+			<div><h1># Todo: Tasky taskiness</h1>
+			<p>description</p></div>
 		</article>
 		<article class="task">
 			<div class="checkbox"></div>
-			<h1># Todo: Tasky taskiness</h1>
-			<p>description</p>
+			<div><h1># Todo: Tasky taskiness</h1>
+			<p>description</p></div>
 		</article>
 		<article class="task">
 			<div class="checkbox"></div>
-			<h1># Todo: Tasky taskiness</h1>
-			<p>description</p>
+			<div><h1># Todo: Tasky taskiness</h1>
+			<p>description</p></div>
 		</article>
 		<article class="task">
 			<div class="checkbox"></div>
-			<h1># Todo: Tasky taskiness</h1>
-			<p>description</p>
+			<div><h1># Todo: Tasky taskiness</h1>
+			<p>description</p></div>
 		</article>
 		<article class="task">
 			<div class="checkbox"></div>
-			<h1># Todo: Tasky taskiness</h1>
-			<p>description</p>
+			<div><h1># Todo: Tasky taskiness</h1>
+			<p>description</p></div>
 		</article>
-	</section>
 	</div>
 </article>
 </main>
