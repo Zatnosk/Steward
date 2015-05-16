@@ -4,272 +4,14 @@
 	<meta charset="utf-8">
 	<title>Steward interface prototype</title>
 </head>
-<style>
-	* {
-		margin: 0px;
-		padding: 0px;
-	}
-	html, .editor > div {
-		min-height: 100%;
-	}
-	body > header {
-		background: green;
-	}
-	body > header > * {
-		line-height: 2rem;
-	}
-
-	main {
-		background: #eee;
-		padding: 20px;
-	}
-	main > * {
-		display: none;
-	}
-	main > .active {
-		display: block;
-	}
-
-	#menu {
-		margin: -20px;
-		font-size: 0.8rem;
-	}
-	#menu a {
-		display: block;
-		padding: 30px 20px;
-	}
-	#menu a:hover {
-		background: #ccc;
-	}
-
-	
-
-	/***************************/
-	/*      VISUAL DESIGN      */
-	/***************************/
-	.editor > div,
-	.project > div {
-		max-width: 800px;
-		margin: auto;
-	}
-	.project > div > :not(:first-child):not(.tool) {
-		margin-top: 20px;
-	}
-	body > header > :not(:first-child), 
-	.task > :not(:first-child) {
-		margin-left: 20px;
-	}
-	.task > .checkbox {
-		background: red;
-		height: 40px;
-		width: 40px;
-		border-radius: 15px;
-	}
-	.task > .checkbox.checked {
-		background: blue;
-	}
-	.tool > .group {
-		margin-left: 20px;
-	}
-	header,
-	.task, .note,
-	.editor input, .editor textarea {
-		padding: 10px 20px;
-	}
-	.task, .note,
-	.editor input, .editor textarea {
-		background: white;
-		border-radius: 5px;
-	}
-	.project header {
-		background: white;
-		border-radius: 5px 5px 0 0;
-	}
-	.tool {
-		background: #ccc;
-		padding: 5px 20px;
-		border-radius: 0 0 5px 5px;
-	}
-
-	/**********************/
-	/*      FLEX BOX      */
-	/**********************/
-	html, body, main,
-	article.project > div,
-	.editor > div {
-		display: flex;
-		flex-flow: column;
-	}
-	body > header,
-	article.task,
-	.tool {
-		display: flex;
-		flex-flow: row;
-	}
-	body, main,
-	article.task > div:not(.checkbox),
-	.editor,
-	.editor textarea{
-		flex-grow: 1;
-	}
-
-	/************************/
-	/*      TYPOGRAPHY      */
-	/************************/
-	#menu a, header {
-		font-family: sans-serif;
-	}
-	#menu a h1, article.project header h1 {
-		font-size: 1.4em;
-		font-variant: small-caps;
-	}
-	#menu a p, article.project header p {
-
-	}
-	article.note {
-		line-height: 1.5em;
-	}
-	input, textarea {
-		font-size: 1.2em;
-	}
-	.tool {
-		font-size: 0.6em;
-		font-family: sans-serif;
-		text-transform: uppercase;
-	}
-	.tool a, #menu a, header a {
-		text-decoration: none;
-		color: black;
-	}
-	.tool a.selected {
-		text-decoration: underline;
-	}
-
-	/********************/
-	/*      INPUTS      */
-	/********************/
-	input, textarea{
-		margin-top: 10px;
-		border: 0px;
-	}
-	textarea {
-		resize: none;
-	}
-	button {
-		padding: 5px;
-	}
-
-</style>
-<script>
-	function linkToTab(e){
-		var target = this.getAttribute('data-target')
-		changeTab(document.getElementById(target))
-		e.preventDefault()
-	}
-
-	function closeEditor(editor){
-		changeTab(document.getElementById(editor.UIcontext.projectID))
-	}
-
-	function init(){
-		var projectEditor = document.getElementById('projectEditor')
-		var noteEditor = document.getElementById('noteEditor')
-		var taskEditor = document.getElementById('taskEditor')
-		projectEditor.open = function(title, text, projectID){
-			var input = this.getElementsByTagName('input')[0]
-			input.value = title
-			var textarea = this.getElementsByTagName('textarea')[0]
-			textarea.value = text
-			this.UIcontext = {projectID: projectID}
-			changeTab(this)
-		}
-		noteEditor.open = function(title, text, projectID){
-			var input = this.getElementsByTagName('input')[0]
-			input.value = title
-			var textarea = this.getElementsByTagName('textarea')[0]
-			textarea.value = text
-			this.UIcontext = {projectID: projectID}
-			changeTab(this)
-		}
-		taskEditor.open = function(title, description, projectID){
-			var inputs = this.getElementsByTagName('input')
-			inputs[0].value = title
-			inputs[1].value = description
-			this.UIcontext = {projectID: projectID}
-			changeTab(this)
-		}
-		var projects = document.getElementsByClassName('project')
-		for(var i = 0; i < projects.length; i++){
-			var id = projects[i].id
-			var header = projects[i].getElementsByTagName('header')[0]
-			header.onclick = (function(project, projectID){
-				return function(){editProject(project, projectID)}
-			})(projects[i], id)
-			console.log(header, header.onclick)
-			var notes = projects[i].getElementsByClassName('note')
-			for(var j = 0; j < notes.length; j++){
-				notes[j].onclick = (function(note, projectID){
-					return function(){editNote(note, projectID)}
-				})(notes[j], id)
-			}
-			var tasks = projects[i].getElementsByClassName('task')
-			for(var k = 0; k < tasks.length; k++){
-				tasks[k].onclick = (function(task, projectID){
-					return function(){editTask(task, projectID)}
-				})(tasks[k], id)
-			}
-		}
-		var menuitems = document.getElementById('menu').getElementsByTagName('a')
-		for(var i = 0; i < menuitems.length; i++){
-			menuitems[i].onclick = linkToTab
-		}
-		document.getElementById('menu-link').onclick = linkToTab
-		changeTab()
-	}
-
-	function editProject(projectElement, projectID){
-		var headerElement = projectElement.getElementsByTagName('header')[0]
-		var title = headerElement.getElementsByTagName('h1')[0].firstChild.data
-		var text = headerElement.getElementsByTagName('p')[0].firstChild.data
-		var projectEditor = document.getElementById('projectEditor')
-		projectEditor.open(title, text, projectID)
-	}
-	function editNote(noteElement, projectID){
-		var title = noteElement.getElementsByTagName('h1')[0]
-		var text = noteElement.getElementsByTagName('p')[0].firstChild.data
-		var noteEditor = document.getElementById('noteEditor')
-		if(title){
-			noteEditor.open(title.firstChild.data, text, projectID)
-		} else {
-			noteEditor.open('', text, projectID)
-		}	
-	}
-	function editTask(taskElement, projectID){
-		var title = taskElement.getElementsByTagName('h1')[0].firstChild.data
-		var description = taskElement.getElementsByTagName('p')[0].firstChild.data
-		var taskEditor = document.getElementById('taskEditor')
-		taskEditor.open(title, description, projectID)
-		changeTab(taskEditor)
-	}
-	function changeTab(tab, parent){
-		var parent = parent || document.body
-		var activetabs = parent.getElementsByClassName('active')
-		for(var i = 0; i < activetabs.length; i++){
-			activetabs[i].classList.remove('active')
-		}
-		(tab || parent.getElementsByClassName('default')[0]).classList.add('active')
-	}
-</script>
+<link rel="stylesheet" href="ui.css">
+<script src="ui.js"></script>
 <body>
 <header>
 	<a id="menu-link" href="#menu" data-target='menu'><h1>Steward</h1></a>
 </header>
 <main>
-<div id="menu" class="default">
-	<a href="#projectA" data-target='projectA'><h1>Project A: Mixed data</h1><p>Description bla bla, lorem ipsum..</p></a>
-	<a href="#projectB" data-target='projectB'><h1>Project B: Textiness</h1><p>Description of something else..</p></a>
-	<a href="#projectC" data-target='projectC'><h1>Project C: Taskyness</h1><p>Description blubba wubba, hubba bubba.</p></a>	
-</div>
+<div id="menu" class="default"></div>
 <div id="projectEditor" class="editor">
 	<div>
 		<div>
@@ -300,135 +42,34 @@
 		<input>
 	</div>
 </div>
-<article class="project" id="projectA">
-	<div>
-		<header>
-			<h1>Project A</h1>
-			<p>Description bla bla, lorem ipsum..</p>
-		</header>
-		<div class="tool">
-			<label>Sort:</label>
-			<div class="group">
-				<a href="#">Creation</a> |
-				<a href="#" class="selected">Latest edit</a>
-			</div>
-			<div class="group">
-				<a href="#">Notes first</a> |
-				<a href="#">Tasks first</a> |
-				<a href="#" class="selected">Interspersed</a>
-			</div>
-		</div>
-		<article class="task">
-			<div class="checkbox"></div>
-			<div>
-				<h1># Todo: Improve task interface</h1>
-				<p>checkbox something?</p>
-			</div>
-		</article>
-		<article class="note saved">
-			<p>1 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut gravida lorem. Ut turpis felis, pulvinar a semper sed, adipiscing id dolor. Pellentesque auctor nisi id magna consequat sagittis. Curabitur dapibus enim sit amet elit pharetra tincidunt feugiat nisl imperdiet. Ut convallis libero in urna ultrices accumsan. Donec sed odio eros. Donec viverra mi quis quam pulvinar at malesuada arcu rhoncus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In rutrum accumsan ultricies. Mauris vitae nisi at sem facilisis semper ac in est.
-		</article>
-		<article class="task">
-			<div class="checkbox"></div>
-			<div>
-				<h1># Todo: Make edit-interface</h1>
-				<p>overlay / new page?</p>
-			</div>
-		</article>
-		<article class="task">
-			<div class="checkbox"></div>
-			<div><h1># Todo: When should a post save?</h1>
-			<p>on edit, on button-click?</p></div>
-		</article>
-		<article class="note">
-			<h1>Note title</h1>
-			<p>2 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut gravida lorem. Ut turpis felis, pulvinar a semper sed, adipiscing id dolor. Pellentesque auctor nisi id magna consequat sagittis. Curabitur dapibus enim sit amet elit pharetra tincidunt feugiat nisl imperdiet. Ut convallis libero in urna ultrices accumsan. Donec sed odio eros. Donec viverra mi quis quam pulvinar at malesuada arcu rhoncus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In rutrum accumsan ultricies. Mauris vitae nisi at sem facilisis semper ac in est.
-		</article>
-		<article class="note">
-			<p>3 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut gravida lorem. Ut turpis felis, pulvinar a semper sed, adipiscing id dolor. Pellentesque auctor nisi id magna consequat sagittis. Curabitur dapibus enim sit amet elit pharetra tincidunt feugiat nisl imperdiet. Ut convallis libero in urna ultrices accumsan. Donec sed odio eros. Donec viverra mi quis quam pulvinar at malesuada arcu rhoncus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In rutrum accumsan ultricies. Mauris vitae nisi at sem facilisis semper ac in est.
-		</article>
-	</div>
-</article>
-<article class="project" id="projectB">
-	<div>
-		<header>
-			<h1>Project B</h1>
-			<p>Description of something else..</p>
-		</header>
-		<div class="tool">
-			<label>Sort:</label>
-			<div class="group">
-				<a href="#">Creation</a> |
-				<a href="#" class="selected">Latest edit</a>
-			</div>
-			<div class="group">
-				<a href="#">Notes first</a> |
-				<a href="#">Tasks first</a> |
-				<a href="#" class="selected">Interspersed</a>
-			</div>
-		</div>
-		<article class="note">
-			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut gravida lorem. Ut turpis felis, pulvinar a semper sed, adipiscing id dolor. Pellentesque auctor nisi id magna consequat sagittis. Curabitur dapibus enim sit amet elit pharetra tincidunt feugiat nisl imperdiet. Ut convallis libero in urna ultrices accumsan. Donec sed odio eros. Donec viverra mi quis quam pulvinar at malesuada arcu rhoncus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In rutrum accumsan ultricies. Mauris vitae nisi at sem facilisis semper ac in est.</p>
-		</article>
-		<article class="note">
-			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut gravida lorem. Ut turpis felis, pulvinar a semper sed, adipiscing id dolor. Pellentesque auctor nisi id magna consequat sagittis. Curabitur dapibus enim sit amet elit pharetra tincidunt feugiat nisl imperdiet. Ut convallis libero in urna ultrices accumsan. Donec sed odio eros. Donec viverra mi quis quam pulvinar at malesuada arcu rhoncus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In rutrum accumsan ultricies. Mauris vitae nisi at sem facilisis semper ac in est.</p>
-		</article>
-		<article class="note">
-			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut gravida lorem. Ut turpis felis, pulvinar a semper sed, adipiscing id dolor. Pellentesque auctor nisi id magna consequat sagittis. Curabitur dapibus enim sit amet elit pharetra tincidunt feugiat nisl imperdiet. Ut convallis libero in urna ultrices accumsan. Donec sed odio eros. Donec viverra mi quis quam pulvinar at malesuada arcu rhoncus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In rutrum accumsan ultricies. Mauris vitae nisi at sem facilisis semper ac in est.</p>
-		</article>
-	</div>
-</article>
-<article class="project" id="projectC">
-	<div>
-		<header>
-			<h1>Project C</h1>
-			<p>Description blubba wubba, hubba bubba.</p>
-		</header>
-		<div class="tool">
-			<label>Sort:</label>
-			<div class="group">
-				<a href="#">Creation</a> |
-				<a href="#" class="selected">Latest edit</a>
-			</div>
-			<div class="group">
-				<a href="#">Notes first</a> |
-				<a href="#">Tasks first</a> |
-				<a href="#" class="selected">Interspersed</a>
-			</div>
-		</div>
-		<article class="task">
-			<div class="checkbox"></div>
-			<div><h1># Todo: Tasky taskiness</h1>
-			<p>description</p></div>
-		</article>
-		<article class="task">
-			<div class="checkbox"></div>
-			<div><h1># Todo: Tasky taskiness</h1>
-			<p>description</p></div>
-		</article>
-		<article class="task">
-			<div class="checkbox"></div>
-			<div><h1># Todo: Tasky taskiness</h1>
-			<p>description</p></div>
-		</article>
-		<article class="task">
-			<div class="checkbox"></div>
-			<div><h1># Todo: Tasky taskiness</h1>
-			<p>description</p></div>
-		</article>
-		<article class="task">
-			<div class="checkbox"></div>
-			<div><h1># Todo: Tasky taskiness</h1>
-			<p>description</p></div>
-		</article>
-		<article class="task">
-			<div class="checkbox"></div>
-			<div><h1># Todo: Tasky taskiness</h1>
-			<p>description</p></div>
-		</article>
-	</div>
-</article>
 </main>
-<script>init()</script>
+<script>
+var lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut gravida lorem. Ut turpis felis, pulvinar a semper sed, adipiscing id dolor. Pellentesque auctor nisi id magna consequat sagittis. Curabitur dapibus enim sit amet elit pharetra tincidunt feugiat nisl imperdiet. Ut convallis libero in urna ultrices accumsan. Donec sed odio eros. Donec viverra mi quis quam pulvinar at malesuada arcu rhoncus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In rutrum accumsan ultricies. Mauris vitae nisi at sem facilisis semper ac in est.'
+
+init()
+var a = new ProjectUI('projectA1', 'Project A: Mixed data', 'Description bla bla, lorem ipsum..')
+var b = new ProjectUI('projectB1', 'Project B: Textiness', 'Description of something else..')
+var c = new ProjectUI('projectC1', 'Project C: Taskyness', 'Description blubba wubba, hubba bubba.')
+a.addPost(new TaskUI('# Todo: Improve edit-task interface', 'checkbox something?'))
+a.addPost(new TaskUI('# Todo: Make login page', ''))
+a.addPost(new NoteUI('', '1 '+lorem))
+a.addPost(new NoteUI('Note title', '2 '+lorem))
+a.addPost(new NoteUI('', '3 '+lorem))
+b.addPost(new NoteUI('Note title', '4 '+lorem))
+b.addPost(new NoteUI('Note title', '5 '+lorem))
+b.addPost(new NoteUI('', '6 '+lorem))
+c.addPost(new TaskUI('# Todo: Tasky taskiness', '1 description'))
+c.addPost(new TaskUI('# Todo: Tasky taskiness', '2 description'))
+c.addPost(new TaskUI('# Todo: Tasky taskiness', '3 description'))
+
+var menu = document.getElementById('menu')
+menu.appendChild(a.menuItem)
+menu.appendChild(b.menuItem)
+menu.appendChild(c.menuItem)
+var main = document.querySelector('main')
+main.appendChild(a.root)
+main.appendChild(b.root)
+main.appendChild(c.root)
+</script>
 </body>
 </html>

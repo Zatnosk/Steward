@@ -1,0 +1,148 @@
+* {
+	margin: 0px;
+	padding: 0px;
+}
+html, .editor > div {
+	min-height: 100%;
+}
+body > header {
+	background: green;
+}
+body > header > * {
+	line-height: 2rem;
+}
+
+main {
+	background: #eee;
+	padding: 20px;
+}
+main > * {
+	display: none;
+}
+main > .active {
+	display: block;
+}
+
+#menu {
+	margin: -20px;
+	font-size: 0.8rem;
+}
+#menu a {
+	display: block;
+	padding: 30px 20px;
+}
+#menu a:hover {
+	background: #ccc;
+}
+
+.editor > div,
+.project > div {
+	max-width: 800px;
+	margin: auto;
+}
+.project > div > div:not(.tool) > * {
+	margin-top: 20px;
+}
+body > header > :not(:first-child), 
+.task > :not(:first-child) {
+	margin-left: 20px;
+}
+.task > .checkbox {
+	background: red;
+	height: 40px;
+	width: 40px;
+	border-radius: 15px;
+}
+.task > .checkbox.checked {
+	background: blue;
+}
+.tool > .group {
+	margin-left: 20px;
+}
+header,
+.task, .note,
+.editor input, .editor textarea {
+	padding: 10px 20px;
+}
+.task, .note,
+.editor input, .editor textarea {
+	background: white;
+	border-radius: 5px;
+}
+.project header {
+	background: white;
+	border-radius: 5px 5px 0 0;
+}
+.tool {
+	background: #ccc;
+	padding: 5px 20px;
+	border-radius: 0 0 5px 5px;
+}
+
+/**********************/
+/*      FLEX BOX      */
+/**********************/
+html, body, main,
+article.project > div,
+.editor > div {
+	display: flex;
+	flex-flow: column;
+}
+body > header,
+article.task,
+.tool {
+	display: flex;
+	flex-flow: row;
+}
+body, main,
+article.task > div:not(.checkbox),
+.editor,
+.editor textarea{
+	flex-grow: 1;
+}
+
+/************************/
+/*      TYPOGRAPHY      */
+/************************/
+#menu a, header {
+	font-family: sans-serif;
+}
+#menu a h1, article.project header h1 {
+	font-size: 1.4em;
+	font-variant: small-caps;
+}
+#menu a p, article.project header p {
+
+}
+article.note {
+	line-height: 1.5em;
+}
+input, textarea {
+	font-size: 1.2em;
+}
+.tool {
+	font-size: 0.6em;
+	font-family: sans-serif;
+	text-transform: uppercase;
+}
+.tool a, #menu a, header a {
+	text-decoration: none;
+	color: black;
+}
+.tool a.selected {
+	text-decoration: underline;
+}
+
+/********************/
+/*      INPUTS      */
+/********************/
+input, textarea{
+	margin-top: 10px;
+	border: 0px;
+}
+textarea {
+	resize: none;
+}
+button {
+	padding: 5px;
+}
