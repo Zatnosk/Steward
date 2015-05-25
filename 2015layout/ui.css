@@ -31,20 +31,21 @@ main > .active {
 	display: block;
 	padding: 30px 20px;
 }
-#menu a:hover {
-	background: #ccc;
-}
+
 
 .editor > div,
-.project > div {
+.project > div,
+#login > * {
 	max-width: 800px;
 	margin: auto;
 }
-.project > div > div:not(.tool) > * {
+.project > div > div:not(.tool) > *,
+#login .entity {
 	margin-top: 20px;
 }
 body > header > :not(:first-child), 
-.task > :not(:first-child) {
+.task > :not(:first-child),
+#login .entity > :not(:first-child) {
 	margin-left: 20px;
 }
 .task > .checkbox {
@@ -56,27 +57,53 @@ body > header > :not(:first-child),
 .task > .checkbox.checked {
 	background: blue;
 }
-.tool > .group {
-	margin-left: 20px;
-}
-header,
+body > header,
+.project header > div:not(.tool),
 .task, .note,
+#login .entity,
 .editor input, .editor textarea {
 	padding: 10px 20px;
 }
 .task, .note,
+#login .entity,
+.project header,
 .editor input, .editor textarea {
+	border: 1px solid #aaa;
 	background: white;
 	border-radius: 5px;
 }
-.project header {
-	background: white;
-	border-radius: 5px 5px 0 0;
-}
 .tool {
+	border: 0px solid #aaa;
+	border-top-width: 1px;
 	background: #ccc;
-	padding: 5px 20px;
-	border-radius: 0 0 5px 5px;
+	padding: 3px 20px;
+}
+.tool .label {
+	display: inline-block;
+	padding: 2px 0px;
+}
+.tool a {
+	display: inline-block;
+	padding: 2px 3px;
+}
+#login .entity {
+	border: 5px solid #ddd;
+}
+#login .entity img {
+	height: 40px;
+	width: 40px;
+}
+/*******************/
+/*      COLOR      */
+/*******************/
+#menu a:hover {
+	background: #ccc;
+}
+.tool a:hover {
+	background: #eee;
+}
+#login .entity:hover{
+	border-color: #8d8;
 }
 
 /**********************/
@@ -89,12 +116,17 @@ article.project > div,
 	flex-flow: column;
 }
 body > header,
+#login > .entity,
 article.task,
 .tool {
 	display: flex;
 	flex-flow: row;
 }
+.tool {
+	justify-content: space-between;
+}
 body, main,
+#login form.entity input:not([type="submit"]),
 article.task > div:not(.checkbox),
 .editor,
 .editor textarea{
@@ -104,6 +136,13 @@ article.task > div:not(.checkbox),
 /************************/
 /*      TYPOGRAPHY      */
 /************************/
+#login .name {
+	font-size: 1.2em;
+	font-weight: bold;
+}
+#login .url {
+	font-size: 0.8em;
+}
 #menu a, header {
 	font-family: sans-serif;
 }
@@ -118,7 +157,7 @@ article.note {
 	line-height: 1.5em;
 }
 input, textarea {
-	font-size: 1.2em;
+	font-size: 1em;
 }
 .tool {
 	font-size: 0.6em;
@@ -136,9 +175,11 @@ input, textarea {
 /********************/
 /*      INPUTS      */
 /********************/
-input, textarea{
+.editor input, .editor textarea{
 	margin-top: 10px;
-	border: 0px;
+}
+#login input {
+	padding: 5px;
 }
 textarea {
 	resize: none;

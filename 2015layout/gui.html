@@ -5,18 +5,22 @@
 	<title>Steward interface prototype</title>
 </head>
 <link rel="stylesheet" href="ui.css">
+<script src="mockdata.js"></script>
 <script src="ui.js"></script>
 <body>
 <header>
-	<a id="menu-link" href="#menu" data-target='menu'><h1>Steward</h1></a>
+	<a id="home-link"><h1>Steward</h1></a>
 </header>
 <main>
+<div id="login">
+	<form class="entity"><img><input id="loginInput" placeholder="https://entity.example.com"><input value="Login" type="submit"></form>
+</div>
 <div id="menu" class="default"></div>
 <div id="projectEditor" class="editor">
 	<div>
 		<div>
-			<button disabled>Save &amp; close</button>
-			<button onClick="closeEditor(this.parentElement.parentElement.parentElement)">Close</button>
+			<button onClick="saveProject(); closeEditor()">Save &amp; close</button>
+			<button onClick="closeEditor()">Close</button>
 		</div>
 		<input>
 		<textarea></textarea>
@@ -25,8 +29,8 @@
 <div id="noteEditor" class="editor">
 	<div>
 		<div>
-			<button disabled>Save &amp; close</button>
-			<button onClick="closeEditor(this.parentElement.parentElement.parentElement)">Close</button>
+			<button onClick="saveNote(); closeEditor()">Save &amp; close</button>
+			<button onClick="closeEditor()">Close</button>
 		</div>
 		<input>
 		<textarea></textarea>
@@ -35,41 +39,14 @@
 <div id="taskEditor" class="editor">
 	<div>
 		<div>
-			<button disabled>Save &amp; close</button>
-			<button onClick="closeEditor(this.parentElement.parentElement.parentElement)">Close</button>
+			<button onClick="saveTask(); closeEditor()">Save &amp; close</button>
+			<button onClick="closeEditor()">Close</button>
 		</div>
 		<input>
 		<input>
 	</div>
 </div>
 </main>
-<script>
-var lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut gravida lorem. Ut turpis felis, pulvinar a semper sed, adipiscing id dolor. Pellentesque auctor nisi id magna consequat sagittis. Curabitur dapibus enim sit amet elit pharetra tincidunt feugiat nisl imperdiet. Ut convallis libero in urna ultrices accumsan. Donec sed odio eros. Donec viverra mi quis quam pulvinar at malesuada arcu rhoncus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In rutrum accumsan ultricies. Mauris vitae nisi at sem facilisis semper ac in est.'
-
-init()
-var a = new ProjectUI('projectA1', 'Project A: Mixed data', 'Description bla bla, lorem ipsum..')
-var b = new ProjectUI('projectB1', 'Project B: Textiness', 'Description of something else..')
-var c = new ProjectUI('projectC1', 'Project C: Taskyness', 'Description blubba wubba, hubba bubba.')
-a.addPost(new TaskUI('# Todo: Improve edit-task interface', 'checkbox something?'))
-a.addPost(new TaskUI('# Todo: Make login page', ''))
-a.addPost(new NoteUI('', '1 '+lorem))
-a.addPost(new NoteUI('Note title', '2 '+lorem))
-a.addPost(new NoteUI('', '3 '+lorem))
-b.addPost(new NoteUI('Note title', '4 '+lorem))
-b.addPost(new NoteUI('Note title', '5 '+lorem))
-b.addPost(new NoteUI('', '6 '+lorem))
-c.addPost(new TaskUI('# Todo: Tasky taskiness', '1 description'))
-c.addPost(new TaskUI('# Todo: Tasky taskiness', '2 description'))
-c.addPost(new TaskUI('# Todo: Tasky taskiness', '3 description'))
-
-var menu = document.getElementById('menu')
-menu.appendChild(a.menuItem)
-menu.appendChild(b.menuItem)
-menu.appendChild(c.menuItem)
-var main = document.querySelector('main')
-main.appendChild(a.root)
-main.appendChild(b.root)
-main.appendChild(c.root)
-</script>
+<script src="testui.js"></script>
 </body>
 </html>
