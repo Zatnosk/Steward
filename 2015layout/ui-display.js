@@ -122,6 +122,7 @@ TaskUI.prototype.insert = function(){
 
 
 function ProjectUI(post){
+	this.id = post.getID()
 	this.buildDOM()
 	this.buildMenuDOM()
 	this.update(post)
@@ -151,7 +152,7 @@ ProjectUI.prototype.buildDOM = function() {
 
 	var tools = document.createElement('div')
 	tools.classList.add('tool')
-	tools.innerHTML =
+	/*tools.innerHTML =
 		'<div class="label">Create:</div>'+
 		'<div class="group">[<a href="#">New Note</a>|<a href="#">New Task</a> ]</div>'+
 		'<div class="label">Sort by:</div>'+
@@ -162,7 +163,18 @@ ProjectUI.prototype.buildDOM = function() {
 		'<div class="group">'+
 			'<a href="#">Notes first</a>|'+
 			'<a href="#">Tasks first</a>|'+
-			'<a href="#" class="selected">Interspersed</a>]</div>'
+			'<a href="#" class="selected">Interspersed</a>]</div>'*/
+	var creationGroup = document.createElement('div')
+	creationGroup.class = "group"
+	var createTask = document.createElement('a')
+	createTask.textContent = 'New Task'
+	createTask.onclick = editor.createTaskAction(this.id)
+	creationGroup.appendChild(createTask)
+	var createNote = document.createElement('a')
+	createNote.textContent = 'New Note'
+	createNote.onclick = editor.createNoteAction(this.id)
+	creationGroup.appendChild(createNote)
+	tools.appendChild(creationGroup)
 	header.appendChild(tools)
 
 	this.children = document.createElement('div')

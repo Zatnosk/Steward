@@ -9,6 +9,25 @@ for(var i in mockdata){
 I.activate({
 	'save': function(post){
 		console.log('save', post)
+	},
+	'create': function(type, projectID){
+		console.log('create', type, projectID)
+		if(type == 'task' || type == 'note'){
+			return {
+				'getID': function(){return type},
+				'getType': function(){return "http://tent.zatnosk.dk/types/"+type+"/v1"},
+				'type': type,
+				'getProjectID': function(){return projectID},
+				'data': {'content': {
+					'title': '',
+					'text': ''
+				}}
+			}
+		}
+	},
+	'delete': function(post){
+		console.log('delete', post)
+		I.hide(post)
 	}
 })
 I.request_login(function(e){console.log('login', e)}, ['https://zatnosk.cupcake.is'])
