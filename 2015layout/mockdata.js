@@ -31,7 +31,7 @@ var mockdata = [{
 	'getProjectID': function(){return 'projectA'},
 	'data': {'content': {
 		'title': 'Improve edit-task interface',
-		'text': 'checkbox something?'
+		'text': 'checkbox something? show todo/done status of tasks'
 	}}
 },{
 	'getID': function(){return 'task2'},
@@ -40,7 +40,8 @@ var mockdata = [{
 	'getProjectID': function(){return 'projectA'},
 	'data': {'content': {
 		'title': 'More decoupling between display and editing',
-		'text': 'editing can work directly with the data model, and then just call .update on the display.'
+		'text': 'editing can work directly with the data model, and then just call .update on the display.',
+		'status': 'done'
 	}}
 },{
 	'getID': function(){return 'task3'},
@@ -48,8 +49,8 @@ var mockdata = [{
 	'type': 'task',
 	'getProjectID': function(){return 'projectA'},
 	'data': {'content': {
-		'title': 'Do away with inline js in the html.',
-		'text': "It's bad."
+		'title': 'Missing features',
+		'text': 'safety dialogs, error messages and sorting the display of notes and tasks.'
 	}}
 },{
 	'getID': function(){return 'note1'},
