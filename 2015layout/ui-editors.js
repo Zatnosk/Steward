@@ -7,8 +7,8 @@ var editor = (function(){
 			this.closeButton = document.querySelector('#projectEditor ._close')
 		},
 		'open': function(post){
-			this.fields[0].value = post.data.content.name
-			this.fields[1].value = post.data.content.description
+			this.fields[0].value = post.data.content.name || ""
+			this.fields[1].value = post.data.content.description || ""
 		},
 		'save': function(post){
 			post.data.content.name =        this.fields[0].value
@@ -23,8 +23,8 @@ var editor = (function(){
 			this.closeButton = document.querySelector('#noteEditor ._close')
 		},
 		'open': function(post){
-			this.fields[0].value = post.data.content.title
-			this.fields[1].value = post.data.content.text
+			this.fields[0].value = post.data.content.title || ""
+			this.fields[1].value = post.data.content.text || ""
 		},
 		'save': function(post){
 			post.data.content.title = this.fields[0].value
@@ -39,8 +39,8 @@ var editor = (function(){
 			this.closeButton = document.querySelector('#taskEditor ._close')
 		},
 		'open': function(post){
-			this.fields[0].value = post.data.content.title
-			this.fields[1].value = post.data.content.text
+			this.fields[0].value = post.data.content.title || ""
+			this.fields[1].value = post.data.content.text || ""
 		},
 		'save': function(post){
 			post.data.content.title = this.fields[0].value
