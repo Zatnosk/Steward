@@ -4,6 +4,7 @@ function Interface(){
 		changeTab()
 		e.preventDefault()
 	}
+	editor.init()
 	changeTab()
 }
 

@@ -1,3 +1,16 @@
+function textToDOM(text){
+	var root = document.createDocumentFragment()
+	var paragraphs = text.split('\n')
+	for(var i = 0; i < paragraphs.length; i++){
+		if(paragraphs[i]){
+			var node = document.createTextNode(paragraphs[i])
+			root.appendChild(node)
+		}
+		root.appendChild(document.createElement('br'))
+	}
+	return root
+}
+
 function NoteUI(post, parentID){
 	this.buildDOM()
 	this.update(post)
@@ -25,8 +38,9 @@ NoteUI.prototype.update = function(post) {
 	NoteUI.instances[post.getID()] = this
 	this.post = post
 	this.projectID = post.getProjectID()
-	this.root.onclick = editNoteOnClick(post)
-	this.textElement.textContent = post.data.content.text // raw access coupling
+	this.root.onclick = editor.editNoteAction(post)
+	this.textElement.innerHTML = ''
+	this.textElement.appendChild(textToDOM(post.data.content.text)) // raw access coupling
 	if(!post.data.content.title){ // raw access coupling
 		if(this.titleElement){
 			this.root.removeChild(this.titleElement)
@@ -44,26 +58,9 @@ NoteUI.prototype.update = function(post) {
 }
 
 NoteUI.prototype.insert = function() {
-	if(ProjectUI.instances[this.projectID]){
-		ProjectUI.instances[this.projectID].children.appendChild(this.root)
-	}
-}
-
-NoteUI.prototype.save = function(title, text){
-	var dirty = false
-	if(this.post.data.content.title != title){ // raw access coupling
-		this.post.data.content.title = title // raw access coupling
-		dirty = true
-	}
-	if(this.post.data.content.text != text){ // raw access coupling
-		this.post.data.content.text = text // raw access coupling
-		dirty = true
-	}
-	if(dirty){
-		this.update(this.post)
-	}
-	if(UIcontext.actions && typeof UIcontext.actions.save == 'function'){
-		UIcontext.actions.save(this.post)
+	var project = ProjectUI.instances[this.projectID]
+	if(project && this.root.parentElement != project.children){
+		project.children.appendChild(this.root)
 	}
 }
 
@@ -108,32 +105,15 @@ TaskUI.prototype.update = function(post){
 	TaskUI.instances[post.getID()] = this
 	this.post = post
 	this.projectID = post.getProjectID()
-	this.root.onclick = editTaskOnClick(post)
+	this.root.onclick = editor.editTaskAction(post)
 	this.textElement.textContent = post.data.content.text // raw access coupling
 	this.titleElement.textContent = post.data.content.title // raw access coupling
 }
 
 TaskUI.prototype.insert = function(){
-	if(ProjectUI.instances[this.projectID]){
-		ProjectUI.instances[this.projectID].children.appendChild(this.root)
-	}
-}
-
-TaskUI.prototype.save = function(title, text){
-	var dirty = false
-	if(this.post.data.content.title != title){ // raw access coupling
-		this.post.data.content.title = title // raw access coupling
-		dirty = true
-	}
-	if(this.post.data.content.text != text){ // raw access coupling
-		this.post.data.content.text = text // raw access coupling
-		dirty = true
-	}
-	if(dirty){
-		this.update(this.post)
-	}
-	if(UIcontext.actions && typeof UIcontext.actions.save == 'function'){
-		UIcontext.actions.save(this.post)
+	var project = ProjectUI.instances[this.projectID]
+	if(project && this.root.parentElement != project.children){
+		project.children.appendChild(this.root)
 	}
 }
 
@@ -219,7 +199,7 @@ ProjectUI.prototype.update = function(post){
 	var id = post.getID()
 	ProjectUI.instances[id] = this
 	this.post = post
-	this.headdiv.onclick = editProjectOnClick(post)
+	this.headdiv.onclick = editor.editProjectAction(post)
 	this.root.id = id
 	this.menuItem.href = '#'+id
 	this.menuItem.setAttribute('data-target', id)
@@ -230,25 +210,12 @@ ProjectUI.prototype.update = function(post){
 }
 
 ProjectUI.prototype.insert = function(){
-	document.getElementById('menu').appendChild(this.menuItem)
-	document.querySelector('main').appendChild(this.root)
-}
-
-ProjectUI.prototype.save = function(name, description){
-	var dirty = false
-	if(this.post.data.content.name != name){ // raw access coupling
-		this.post.data.content.name = name // raw access coupling
-		dirty = true
+	var menu = document.getElementById('menu')
+	if(this.menuItem.parentElement != menu){
+		menu.appendChild(this.menuItem)
 	}
-	if(this.post.data.content.description != description){ // raw access coupling
-		this.post.data.content.description = description // raw access coupling
-		dirty = true
-	}
-	console.log(dirty)
-	if(dirty){
-		this.update(this.post)
-		if(UIcontext.actions && typeof UIcontext.actions.save == 'function'){
-			UIcontext.actions.save(this.post)
-		}
+	var main = document.querySelector('main')
+	if(this.root.parentElement != main){
+		main.appendChild(this.root)
 	}
 }
