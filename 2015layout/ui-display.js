@@ -108,6 +108,11 @@ TaskUI.prototype.update = function(post){
 	this.root.onclick = editor.editTaskAction(post)
 	this.textElement.textContent = post.data.content.text // raw access coupling
 	this.titleElement.textContent = post.data.content.title // raw access coupling
+	this.checkbox.classList.remove('checked')
+	if(post.data.content.status == 'done'){
+		this.checkbox.classList.add('checked')
+	}
+	
 }
 
 TaskUI.prototype.insert = function(){
