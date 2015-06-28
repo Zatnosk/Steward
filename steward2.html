@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Steward interface prototype</title>
+</head>
+<link rel="stylesheet" href="2015layout/ui.css">
+<script src="../tarpjs/hawk.js"></script>
+<script src="../tarpjs/tarp.js"></script>
+<script src="scaffold.js"></script>
+<script src="posttypes.js"></script>
+<script>
+	var post_types = [
+		"http://tent.zatnosk.dk/types/project/v1",
+		"http://tent.zatnosk.dk/types/task/v1",
+		"http://tent.zatnosk.dk/types/note/v1",
+	]
+	var readonly_types = [
+		"http://cacauu.de/tasky/list/v0.1",
+		"http://cacauu.de/tasky/task/v0.1"
+	]
+	var app_data = {
+		"name": "Steward",
+		"url": "http://apps.zatnosk.dk/steward",
+		"redirect_uri": "http://apps.zatnosk.dk/steward.html",
+		"types": {
+			"write": post_types,
+			"read": readonly_types
+		},
+		"scopes": [
+			"permissions"
+		]
+	}
+</script>
+<script src="2015layout/ui-display.js"></script>
+<script src="2015layout/ui-editors.js"></script>
+<script src="2015layout/ui.js"></script>
+<body>
+<header>
+	<a id="home-link"><h1>Steward</h1></a><img src="" class="user_picture" id="avatar">
+</header>
+<main>
+<div id="login">
+	<form class="entity"><img><input id="loginInput" placeholder="https://entity.example.com"><input value="Login" type="submit"></form>
+</div>
+<div id="menu" class="default"></div>
+<div id="projectEditor" class="editor">
+	<div>
+		<div>
+			<button class="_save">Save &amp; close</button>
+			<button class="_close">Close</button>
+			<button class="_delete">Delete</button>
+		</div>
+		<input>
+		<textarea></textarea>
+	</div>
+</div>
+<div id="noteEditor" class="editor">
+	<div>
+		<div>
+			<button class="_save">Save &amp; close</button>
+			<button class="_close">Close</button>
+			<button class="_delete">Delete</button>
+		</div>
+		<input>
+		<textarea></textarea>
+	</div>
+</div>
+<div id="taskEditor" class="editor">
+	<div>
+		<div>
+			<button class="_save">Save &amp; close</button>
+			<button class="_close">Close</button>
+			<button class="_delete">Delete</button>
+		</div>
+		<input>
+		<input>
+	</div>
+</div>
+</main>
+<script>
+	var steward = new App(app_data, new Interface())
+</script>
+</body>
+</html>

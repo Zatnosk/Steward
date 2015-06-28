@@ -11,6 +11,13 @@ function common_getProject(strict){
 	}
 }
 
+function common_getProjectID(){
+	var project = this.getProject()
+	if(project){
+		return project.getID()
+	}
+}
+
 function common_save(server){
 	if(!this.getProject(true) && this.local_project){
 		var project = this.local_project
@@ -61,6 +68,7 @@ Note.create = function(project){
 }
 
 Note.prototype.getProject = common_getProject
+Note.prototype.getProjectID = common_getProjectID
 Note.prototype.save = common_save
 
 /*******************************************************************************
@@ -168,3 +176,4 @@ Task.prototype.moveToProject = function(){
 }
 
 Task.prototype.getProject = common_getProject
+Task.prototype.getProjectID = common_getProjectID
