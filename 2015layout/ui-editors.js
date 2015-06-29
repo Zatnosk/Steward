@@ -92,6 +92,7 @@ var editor = (function(){
 		return function(e){
 			var post = UIcontext.actions.create(type, projectID)
 			meta.save(post)
+			UIcontext.actions.save(post)
 			Interface.self.show(post)
 			changeTab(UIcontext.currentTab)
 			if(e && typeof e.preventDefault == 'function'){e.preventDefault()}
@@ -116,7 +117,7 @@ var editor = (function(){
 	function deleteAction(post){
 		// TODO: Add deletion confirmation
 		return function(e){
-			UIcontext.actions.delete(post)
+			UIcontext.actions.del(post)
 			changeTab(UIcontext.currentTab)
 			if(e && typeof e.preventDefault == 'function'){e.preventDefault()}
 		}

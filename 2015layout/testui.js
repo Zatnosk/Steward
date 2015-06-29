@@ -25,7 +25,7 @@ I.activate({
 			}
 		}
 	},
-	'delete': function(post){
+	'del': function(post){
 		console.log('delete', post)
 		I.hide(post)
 	}
