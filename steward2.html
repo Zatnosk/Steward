@@ -15,17 +15,12 @@
 		"http://tent.zatnosk.dk/types/task/v1",
 		"http://tent.zatnosk.dk/types/note/v1",
 	]
-	var readonly_types = [
-		"http://cacauu.de/tasky/list/v0.1",
-		"http://cacauu.de/tasky/task/v0.1"
-	]
 	var app_data = {
 		"name": "Steward",
 		"url": "http://apps.zatnosk.dk/steward",
 		"redirect_uri": "http://apps.zatnosk.dk/steward.html",
 		"types": {
-			"write": post_types,
-			"read": readonly_types
+			"write": post_types
 		},
 		"scopes": [
 			"permissions"
