@@ -35,9 +35,9 @@ NoteUI.prototype.hide = function(){
 }
 
 NoteUI.prototype.update = function(post) {
-	NoteUI.instances[post.getID()] = this
+	NoteUI.instances[post.getLocalID()] = this
 	this.post = post
-	this.projectID = post.getProjectID()
+	this.projectID = post.getProjectLocalID()
 	this.root.onclick = editor.editNoteAction(post)
 	this.textElement.innerHTML = ''
 	this.textElement.appendChild(textToDOM(post.data.content.text)) // raw access coupling
@@ -102,9 +102,9 @@ TaskUI.prototype.hide = function(){
 }
 
 TaskUI.prototype.update = function(post){
-	TaskUI.instances[post.getID()] = this
+	TaskUI.instances[post.getLocalID()] = this
 	this.post = post
-	this.projectID = post.getProjectID()
+	this.projectID = post.getProjectLocalID()
 	this.root.onclick = editor.editTaskAction(post)
 	this.textElement.textContent = post.data.content.text // raw access coupling
 	this.titleElement.textContent = post.data.content.title // raw access coupling
@@ -127,7 +127,7 @@ TaskUI.prototype.insert = function(){
 
 
 function ProjectUI(post){
-	this.id = post.getID()
+	this.id = post.getLocalID()
 	this.buildDOM()
 	this.buildMenuDOM()
 	this.update(post)
@@ -213,13 +213,13 @@ ProjectUI.prototype.hide = function(){
 }
 
 ProjectUI.prototype.update = function(post){
-	var id = post.getID()
-	ProjectUI.instances[id] = this
+	this.id = post.getLocalID()
+	ProjectUI.instances[this.id] = this
 	this.post = post
 	this.headdiv.onclick = editor.editProjectAction(post)
-	this.root.id = id
-	this.menuItem.href = '#'+id
-	this.menuItem.setAttribute('data-target', id)
+	this.root.id = this.id
+	this.menuItem.href = '#'+this.id
+	this.menuItem.setAttribute('data-target', this.id)
 	this.titleElement.textContent = post.data.content.name // raw access coupling
 	this.menuTitleElement.textContent = post.data.content.name // raw access coupling
 	this.textElement.textContent = post.data.content.description // raw access coupling

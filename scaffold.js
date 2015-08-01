@@ -104,7 +104,22 @@ Post.prototype.hasTentID = function(){
 	return this.data && this.data.id && this.data.entity
 }
 
+Post.prototype.getTentID = function(){
+	if(this.hasTentID()){
+		return this.data.entity+'/'+this.data.id
+	}
+}
+
+Post.prototype.getLocalID = function(){
+	if(!this.local_id){
+		this.local_id = Math.random().toString(36).substr(2)
+		Post.localDir[this.local_id] = this
+	}
+	return this.local_id
+}
+
 Post.prototype.getID_force = function(){
+	console.error('deprecated')
 	var post = this
 	return new Promise(function(resolve, reject){
 		if(!post.hasTentID()){
@@ -118,6 +133,7 @@ Post.prototype.getID_force = function(){
 }
 
 Post.prototype.getID = function(){
+	console.error('deprecated')
 	if(this.hasTentID()){
 		return this.data.entity+'/'+this.data.id
 	} else if(!this.local_id){
@@ -137,6 +153,7 @@ Post.prototype.getType = function(){
 
 Post.known_types = {}
 Post.list = []
+Post.localDir = []
 
 Post.getAllOfType = function(type){
 	return Post.list.filter(function(p){p.getType() == type})
@@ -168,8 +185,8 @@ function App(app_data, ui){
 			}
 		},
 		'create': function(posttype, parent_id){
-			parent = Post.list[parent_id]
-			
+			parent = Post.localDir[parent_id]
+			console.log(parent_id, parent)
 			if(posttype == 'project'){
 				var id = Math.random().toString(36).substr(2)
 				var post = Project.create('Unnamed', id)
@@ -204,7 +221,7 @@ function App(app_data, ui){
 			setAvatarSrc(server)
 			app.active_server = server
 			ui.activate(actions)
-			Post.prototype.onupdate = function(){ui.update(this)}
+			Post.prototype.onupdate = function(){ui.show(this)}
 			app.refresh()
 		})
 	}

@@ -12,9 +12,24 @@ function common_getProject(strict){
 }
 
 function common_getProjectID(){
+	console.error('deprecated')
 	var project = this.getProject()
 	if(project){
 		return project.getID()
+	}
+}
+
+function common_getProjectLocalID(){
+	var project = this.getProject()
+	if(project){
+		return project.getLocalID()
+	}
+}
+
+function common_getProjectTentID(){
+	var project = this.getProject()
+	if(project){
+		return project.getTentID()
 	}
 }
 
@@ -69,6 +84,8 @@ Note.create = function(project){
 
 Note.prototype.getProject = common_getProject
 Note.prototype.getProjectID = common_getProjectID
+Note.prototype.getProjectLocalID = common_getProjectLocalID
+Note.prototype.getProjectTentID = common_getProjectTentID
 Note.prototype.save = common_save
 
 /*******************************************************************************
@@ -177,3 +194,5 @@ Task.prototype.moveToProject = function(){
 
 Task.prototype.getProject = common_getProject
 Task.prototype.getProjectID = common_getProjectID
+Task.prototype.getProjectLocalID = common_getProjectLocalID
+Task.prototype.getProjectTentID = common_getProjectTentID

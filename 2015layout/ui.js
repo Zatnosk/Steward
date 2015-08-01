@@ -13,7 +13,7 @@ Interface.prototype.activate = function(actions) {
 }
 
 Interface.prototype.show = function(post, id) {
-	id = id || post.getID()
+	id = id || post.getLocalID()
 	var cl = typeToClass(post.getType())
 	if(cl){
 		if(cl.instances[id]){
@@ -26,7 +26,7 @@ Interface.prototype.show = function(post, id) {
 }
 
 Interface.prototype.hide = function(post) {
-	var id = post.getID()
+	var id = post.getLocalID()
 	var cl = typeToClass(post.getType())
 	if(cl && cl.instances[id]){
 		cl.instances[id].hide()
@@ -34,7 +34,7 @@ Interface.prototype.hide = function(post) {
 }
 
 Interface.prototype.update = function(post, id) {
-	console.log('UI Interface .update() is deprecated. Use .show() instead.')
+	console.error('UI Interface .update() is deprecated. Use .show() instead.')
 	this.show(post, id)
 }
 
