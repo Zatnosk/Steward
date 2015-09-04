@@ -70,14 +70,14 @@ function get_mention_of_type(tent_post, type){
 }
 
 function get_tent_id(tent_post){
+	// coincidentally works for mentions too.
 	return tent_post.entity + '/' + tent_post.id
 }
 
 function create_box(tent_post, parent){
-	var local_id = create_local_id()
 	var box = {
 		'tent_post': tent_post,
-		'local_id': local_id,
+		'local_id': create_local_id(),
 		'get_local_id': function(){
 			return this.local_id
 		},
@@ -108,6 +108,20 @@ var warehouse = {
 	'tent_id_index': [],
 	'local_id_index': [],
 	'load_post': function(tent_post){
-		
+		var parent_mention = get_mention_of_type(tent_post, PROJECT_TYPE)
+		if(parent_mention){
+			var parent_id = get_tent_id(parent_mention)
+			var parent_box = this.tent_id_index[parent_id]
+			if(!parent_box){
+				parent_box = create_box({
+					'id': parent_mention.id,
+					'entity': parent_mention.entity,
+					'placeholder': true
+				})
+				this.tent_id_index[parent_id] = parent_box
+				this.local_id_index[parent_box.get_local_id] = parent_box
+			}
+		}
+		var box = create_box(tent_post, parent_box)
 	}
 }
