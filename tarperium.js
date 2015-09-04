@@ -108,6 +108,7 @@ var warehouse = {
 	'tent_id_index': [],
 	'local_id_index': [],
 	'load_post': function(tent_post){
+		//TODO: check if box exists already, and do update if not
 		var parent_mention = get_mention_of_type(tent_post, PROJECT_TYPE)
 		if(parent_mention){
 			var parent_id = get_tent_id(parent_mention)
@@ -118,10 +119,31 @@ var warehouse = {
 					'entity': parent_mention.entity,
 					'placeholder': true
 				})
-				this.tent_id_index[parent_id] = parent_box
-				this.local_id_index[parent_box.get_local_id] = parent_box
+				this.store_box(parent_box)
 			}
 		}
-		var box = create_box(tent_post, parent_box)
+		var box = this.store_box(create_box(tent_post, parent_box))
+	},
+	'store_box': function(box){
+		// box is only stored 
+		// if neither id is used OR
+		// if the currently stored box is a placeholder
+		var local_id = box.get_local_id()
+		var tent_id = box.get_tent_id()
+		var old_box = tent_id_index[tent_id] || local_id_index[local_id]
+		if(old_box){
+			if(old_box.placeholder){
+				old_box.local_id = local_id
+				old_box.tent_post = box.tent_post
+				old_box.parent = box.parent
+				this.tent_id_index[tent_id] = old_box
+				this.local_id_index[local_id] = old_box
+			}
+			return old_box
+		} else {
+			this.tent_id_index[tent_id] = box
+			this.local_id_index[local_id] = box
+		}
+		return box
 	}
 }
