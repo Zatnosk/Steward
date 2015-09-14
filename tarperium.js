@@ -55,14 +55,10 @@ function remove_mention(tent_post, target){
 
 function get_mention_of_type(tent_post, type){
 	for(var i in tent_post.mentions){
-		var mention_type = tent_post.mentions[i].type
-		if(typeof mention_type != "string"
-			|| typeof type != "string"){
-			continue
-		}
-		mention_type = mention_type.split('#', 1)
-		type = type.split('#', 1)
-		if(mention_type == type){
+		var mention_type = get_type(tent_post.mentions[i], true)
+		if(typeof mention_type == "string"
+			&& typeof type == "string"
+			&& mention_type == type){
 			return tent_post.mentions[i]
 		}
 	}
@@ -72,6 +68,14 @@ function get_mention_of_type(tent_post, type){
 function get_tent_id(tent_post){
 	// coincidentally works for mentions too.
 	return tent_post.entity + '/' + tent_post.id
+}
+
+function get_type(tent_post, without_fragment){
+	var type = tent_post.type
+	if(without_fragment && typeof type == 'string'){
+		type = type.split('#', 1)
+	}
+	return type
 }
 
 function create_box(tent_post, parent){
@@ -84,6 +88,9 @@ function create_box(tent_post, parent){
 		'get_tent_id': function(){
 			return get_tent_id(this.tent_post)
 		},
+		'get_type': function(without_fragment){
+			return get_type(this.tent_post, without_fragment)
+		}
 	}
 	if(parent){
 		set_parent(box, parent)
@@ -107,6 +114,7 @@ function set_parent(box, parent){
 var warehouse = {
 	'tent_id_index': [],
 	'local_id_index': [],
+	'type_index': [],
 	'load_post': function(tent_post){
 		//TODO: check if box exists already, and do update if not
 		var parent_mention = get_mention_of_type(tent_post, PROJECT_TYPE)
@@ -145,5 +153,17 @@ var warehouse = {
 			this.local_id_index[local_id] = box
 		}
 		return box
+	}
+}
+
+var transport = {
+	'server': undefined,
+	'warehouse': undefined,
+	'get_all_of_type': function(type){
+		return this.server.posts_feed({'types': type}).then(function(feed){
+			for(var i in feed.posts){
+				warehouse.load_post(feed.posts[i])
+			}
+		})
 	}
 }
