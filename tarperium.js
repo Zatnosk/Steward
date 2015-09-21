@@ -67,7 +67,7 @@ function get_mention_of_type(tent_post, type){
 
 function get_tent_id(tent_post){
 	// coincidentally works for mentions too.
-	return tent_post.entity + '/' + tent_post.id
+	return tent_post.entity + ' ' + tent_post.id
 }
 
 function get_type(tent_post, without_fragment){
@@ -130,12 +130,12 @@ var warehouse = {
 				this.store_box(parent_box)
 			}
 		}
-		var box = this.store_box(create_box(tent_post, parent_box))
+		return this.store_box(create_box(tent_post, parent_box))
 	},
 	'store_box': function(box){
 		// box is only stored 
-		// if neither id is used OR
-		// if the currently stored box is a placeholder
+		// if (neither id is used) OR
+		// if (the currently stored box is a placeholder)
 		var local_id = box.get_local_id()
 		var tent_id = box.get_tent_id()
 		var old_box = tent_id_index[tent_id] || local_id_index[local_id]
@@ -159,11 +159,41 @@ var warehouse = {
 var transport = {
 	'server': undefined,
 	'warehouse': undefined,
+	'load_feed': function(feed){
+		var boxes = []
+		for(var i in feed.posts){
+			var box = warehouse.load_post(feed.posts[i])
+			boxes.push(box)
+		}
+		return boxes
+	}
 	'get_all_of_type': function(type){
-		return this.server.posts_feed({'types': type}).then(function(feed){
-			for(var i in feed.posts){
-				warehouse.load_post(feed.posts[i])
-			}
-		})
+		return this.server.posts_feed({'types': type})
+		.then(this.load_feed)
+	},
+	'get_all_mentioning': function(tent_id){
+		return this.server.posts_feed({'mentions': tent_id})
+		.then(this.load_feed)
+	}
+}
+
+function App(){
+
+}
+
+App.prototype.refresh_overview = function(){
+	transport.get_all_of_type(PROJECT_TYPE)
+	.then(this.update_ui)
+}
+
+App.prototype.refresh_project = function(tent_id){
+	transport.get_all_mentioning(tent_id)
+	.then(this.update_ui)
+}
+
+App.prototype.update_ui = function(posts){
+	console.log('This should be App', this)
+	for(var i in posts){
+		this.ui.show(posts[i])
 	}
 }
