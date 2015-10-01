@@ -286,14 +286,16 @@ function update_ui(posts){
 }
 
 function setAvatarSrc(){
-
+		var avatar = document.getElementById("avatar")
+		var uri = hooks.server.get_avatar_uri()
+		avatar.src = uri
 }
 
 function connect(entity){
 	tarp.get_server(entity)
 	.then(function(server){
-		setAvatarSrc(server)
 		hooks.server = server
+		setAvatarSrc()
 		hooks.ui.activate(actions)
 		refresh({'limit': 50})
 	})
