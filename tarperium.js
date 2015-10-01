@@ -73,7 +73,7 @@ function get_tent_id_from_mention(mention, entity){
 }
 
 function get_tent_id(tent_post){
-	return tent_post.entity + ' ' + tent_post.id
+	if(tent_post.entity && tent_post.id) return tent_post.entity + ' ' + tent_post.id
 }
 
 function get_type(tent_post, with_fragment){
@@ -91,45 +91,49 @@ function to_child_version(tent_post){
 	return tent_post
 }
 
-function create_box(tent_post, parent){
-	var box = {
-		'tent_post': tent_post,
-		'local_id': create_local_id(),
-		'data': tent_post, // deprecated
-		'get_local_id': function(){
-			return this.local_id
-		},
-		'get_tent_id': function(){
-			return get_tent_id(this.tent_post)
-		},
-		'get_type': function(with_fragment){
-			return get_type(this.tent_post, with_fragment)
-		},
-		'get_tent_post': function(){
-			return this.tent_post
-		},
-		'set_tent_post': function(value){
-			this.tent_post = value
-		},
-		'getLocalID': function(){
-			//console.log("deprecated")
-			return this.get_local_id()
-		},
-		'getTentID': function(){
-			//console.log("deprecated")
-			return this.get_tent_id()
-		},
-		'getType': function(with_fragment){
-			//console.log("deprecated")
-			return this.get_type(with_fragment)
-		},
-		'getProjectLocalID': function(){
-			//console.log("deprecated")
-			if(this.parent) {
-				return this.parent.get_local_id()
-			}
+function Box(tent_post){
+	this.tent_post = tent_post
+	this.data = tent_post
+	this.local_id = create_local_id()
+}
+Box.prototype = {
+	'get_local_id': function(){
+		return this.local_id
+	},
+	'get_tent_id': function(){
+		return get_tent_id(this.tent_post)
+	},
+	'get_type': function(with_fragment){
+		return get_type(this.tent_post, with_fragment)
+	},
+	'get_tent_post': function(){
+		return this.tent_post
+	},
+	'set_tent_post': function(value){
+		this.tent_post = value
+	},
+	'getLocalID': function(){
+		//console.log("deprecated")
+		return this.get_local_id()
+	},
+	'getTentID': function(){
+		//console.log("deprecated")
+		return this.get_tent_id()
+	},
+	'getType': function(with_fragment){
+		//console.log("deprecated")
+		return this.get_type(with_fragment)
+	},
+	'getProjectLocalID': function(){
+		//console.log("deprecated")
+		if(this.parent) {
+			return this.parent.get_local_id()
 		}
 	}
+}
+
+function create_box(tent_post, parent){
+	var box = new Box(tent_post)
 	if(parent){
 		set_parent(box, parent)
 	}
@@ -141,6 +145,7 @@ function create_local_id(){
 }
 
 function set_parent(box, parent){
+	if(box.parent == parent) return
 	if(box.parent){
 		remove_mention(box.tent_post, box.parent.tent_post)
 	}
@@ -154,44 +159,33 @@ var warehouse = {
 	'tent_id_index': [],
 	'local_id_index': [],
 	'type_index': [],
-	'load_post': function(tent_post){
-		//TODO: check if box exists already, and do update if not
+	'load_post': function(tent_post, local_id){
 		var parent_mention = get_mention_of_type(tent_post, PROJECT_TYPE)
 		if(parent_mention){
-			var parent_id = get_tent_id_from_mention(parent_mention, tent_post.entity)
-			console.log('parent id', parent_id)
-			var parent_box = this.tent_id_index[parent_id]
-			if(!parent_box){
-				parent_box = create_box({
-					'id': parent_mention.id,
-					'entity': parent_mention.entity,
-					'placeholder': true
-				})
-				this.store_box(parent_box)
-			}
+			var entity = parent_mention.entity || tent_post.entity
+			var parent_box = this.load_post({
+				'id': parent_mention.post,
+				'entity': entity,
+				'placeholder': true
+			})
 		}
-		return this.store_box(create_box(tent_post, parent_box))
+		var box = this.tent_id_index[get_tent_id(tent_post)]
+		if(local_id && !box) box = this.local_id_index[local_id]
+		if (box) return this.update_box(box, tent_post, parent_box)
+		else     return this.store_box(create_box(tent_post, parent_box))
 	},
 	'store_box': function(box){
-		// box is only stored 
-		// if (neither id is used) OR
-		// if (the currently stored box is a placeholder)
-		var local_id = box.get_local_id()
-		var tent_id = box.get_tent_id()
-		var old_box = this.tent_id_index[tent_id] || this.local_id_index[local_id]
-		if(old_box){
-			if(old_box.placeholder){
-				old_box.local_id = local_id
-				old_box.tent_post = box.tent_post
-				old_box.parent = box.parent
-				this.tent_id_index[tent_id] = old_box
-				this.local_id_index[local_id] = old_box
-			}
-			return old_box
-		} else {
-			this.tent_id_index[tent_id] = box
-			this.local_id_index[local_id] = box
-		}
+		this.tent_id_index[box.get_tent_id()] = box
+		this.local_id_index[box.get_local_id()] = box
+		console.log('stored', box)
+		return box
+	},
+	'update_box': function(box, tent_post, parent){
+		if (tent_post.placeholder) return box
+		box.tent_post = tent_post
+		box.data = tent_post //deprecated
+		if(parent) box.parent = parent
+		console.log('updated', box)
 		return box
 	}
 }
@@ -201,18 +195,16 @@ var transport = {
 		var boxes = []
 		for(var i in feed.posts){
 			var box = warehouse.load_post(feed.posts[i])
-			boxes.push(box)
+			if(box.get_type() == PROJECT_TYPE){
+				boxes.unshift(box)
+			} else {
+				boxes.push(box)
+			}
 		}
 		return boxes
 	},
-	'get_all_of_type': function(type){
-		return hooks.server.posts_feed({'types': type})
-		.then(this.load_feed)
-		// returns a promise
-	},
-	'get_all_mentioning': function(tent_id){
-		return hooks.server.posts_feed({'mentions': tent_id})
-		.then(this.load_feed)
+	'get': function(params){
+		return hooks.server.posts_feed(params).then(this.load_feed)
 		// returns a promise
 	},
 	'delete': function(box){
@@ -220,32 +212,47 @@ var transport = {
 		// returns a promise
 	},
 	'commit': function(box){
-		var tent_post = to_child_version(box.get_tent_post())
-		return hooks.server.put_post(tent_post)
-		.then(function(response){
-			var box = warehouse.load_post(JSON.parse(response.body).post)
-			return box
+		if(box.get_tent_id()){
+			var tent_post = to_child_version(box.get_tent_post())
+			var request = hooks.server.put_post(tent_post)
+		} else {
+			var tent_post = box.get_tent_post()
+			var request = hooks.server.new_post(tent_post)
+		}
+		return request.then(function(response){
+			return warehouse.load_post(JSON.parse(response.body).post, box.get_local_id())
 		})
 		// returns a promise
 	}
 }
 
 var actions = {
-	'delete': function(box){
+	'del': function(box){
 		return transport.delete(box)
+		.then(function(){
+			hooks.ui.hide(box)
+		})
 		// returns a promise
 	},
 	'save': function(box){
 		return transport.commit(box)
 		// returns a promise
 	},
-	'create': function(post_type, parent_box){
+	'create': function(post_type, parent_id){
+		if(post_type == 'task'){
+			post_type = TASK_TYPE
+		} else if(post_type == 'note'){
+			post_type = NOTE_TYPE
+		} else if(post_type == 'project'){
+			post_type = PROJECT_TYPE
+		}
 		if(typeof hooks.default_post_content_generators[post_type] == 'function'){
 			var content = hooks.default_post_content_generators[post_type]()
 		} else {
 			content = {}
 		}
-		var box = load_post(create_post(content, post_type))
+		var box = warehouse.load_post(create_post(content, post_type))
+		var parent_box = warehouse.local_id_index[parent_id]
 		if(parent_box){
 			set_parent(box, parent_box)
 		}
@@ -255,37 +262,27 @@ var actions = {
 
 var hooks = {
 	'ui': undefined,
-	'default_post_content_generators': undefined,
+	'default_post_content_generators': app_specific_settings.default_post_content_generators,
 	'server': undefined
 }
 
-function refresh_all(){
-	return transport.get_all_of_type(PROJECT_TYPE)
-	.then(update_ui)
-	.then(function(){
-		return transport.get_all_of_type(NOTE_TYPE+','+TASK_TYPE)
-	})
-	.then(update_ui)
+function refresh(feed_params){
+	return transport.get(feed_params).then(update_ui)
 }
 
 function refresh_overview(){
-	return transport.get_all_of_type(PROJECT_TYPE)
-	.then(update_ui)
-	// returns a promise
+	return refresh({'types': PROJECT_TYPE})
 }
 
 function refresh_project(tent_id){
-	return transport.get_all_mentioning(tent_id)
-	.then(update_ui)
-	// returns a promise
+	return refresh({'mentions': tent_id})
 }
 
 function update_ui(posts){
-	console.log('update ui', posts)
 	for(var i in posts){
 		hooks.ui.show(posts[i])
 	}
-	console.log('update done')
+	return posts
 }
 
 function setAvatarSrc(){
@@ -298,7 +295,7 @@ function connect(entity){
 		setAvatarSrc(server)
 		hooks.server = server
 		hooks.ui.activate(actions)
-		refresh_all()
+		refresh({'limit': 50})
 	})
 }
 
@@ -312,7 +309,14 @@ return function(app_data, ui){
 		if(entity){ connect(entity) }
 		else{ ui.request_login(connect, tarp.get_known_entities()) }
 	})
+	return {
+		'refresh': refresh,
+		'debug': function(){
+			console.log(warehouse)
+		}
+	}
 }
+
 })({
 	'default_post_content_generators': {
 		PROJECT_TYPE: function(){return {'name': "Unnamed Project"}},
