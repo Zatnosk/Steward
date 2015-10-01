@@ -1,0 +1,208 @@
+* {
+	margin: 0px;
+	padding: 0px;
+}
+html, .editor > div {
+	min-height: 100%;
+}
+body > header {
+	background: green;
+}
+body > header > * {
+	line-height: 2rem;
+}
+body > header .user_picture {
+	float: left;
+	width: 20px;
+	height: 20px;
+	margin: 5px;
+	border-radius: 5px;
+}
+
+main {
+	background: #eee;
+	padding: 20px;
+}
+main > * {
+	display: none;
+}
+main > .active {
+	display: block;
+}
+main.active > .project {
+	display: block;
+	overflow: auto;
+	margin: 0 0 20px 0;
+}
+.project header {
+	margin-bottom: 20px;
+}
+main.active .note p,
+main.active .task {
+	min-width: 200px;
+	max-height: 15em;
+	overflow: hidden;
+}
+main.active .task:not(:first-child),
+main.active .note:not(:first-child){
+	margin-left: 20px;
+}
+main.active .task:nth-child(n+4),
+main.active .note:nth-child(n+4){
+	display: none;
+}
+
+.project > div,
+.editor > div,
+#login > * {
+	max-width: 800px;
+	margin: auto;
+}
+#login .entity {
+	margin-top: 20px;
+}
+body > header > :not(:first-child), 
+.task > :not(:first-child),
+#login .entity > :not(:first-child) {
+	margin-left: 20px;
+}
+.task > .checkbox {
+	background: red;
+	height: 40px;
+	width: 40px;
+	border-radius: 15px;
+}
+.task > .checkbox.checked {
+	background: blue;
+}
+body > header,
+.project header > div:not(.tool),
+.task, .note,
+#login .entity,
+.editor input, .editor textarea {
+	padding: 10px 20px;
+}
+.task, .note,
+#login .entity,
+.project header,
+.editor input, .editor textarea {
+	border: 1px solid #aaa;
+	background: white;
+	border-radius: 5px;
+}
+.tool {
+	border: 0px solid #aaa;
+	border-top-width: 1px;
+	background: #ccc;
+	padding: 3px 20px;
+}
+.tool .label {
+	display: inline-block;
+	padding: 2px 0px;
+}
+.tool a {
+	display: inline-block;
+	padding: 2px 3px;
+}
+#login .entity {
+	border: 5px solid #ddd;
+}
+#login .entity img {
+	height: 40px;
+	width: 40px;
+}
+/*******************/
+/*      COLOR      */
+/*******************/
+#menu a:hover {
+	background: #ccc;
+}
+.tool a:hover {
+	background: #eee;
+}
+#login .entity:hover{
+	border-color: #8d8;
+}
+
+/**********************/
+/*      FLEX BOX      */
+/**********************/
+html, body, main,
+.project > div,
+.editor > div {
+	display: flex;
+	flex-flow: column;
+}
+body > header,
+#login > .entity,
+article.task,
+.project > div > div,
+.tool {
+	display: flex;
+	flex-flow: row;
+}
+.tool {
+	justify-content: space-between;
+}
+body, main,
+#login form.entity input:not([type="submit"]),
+article.task > div:not(.checkbox),
+.editor,
+.editor textarea{
+	flex-grow: 1;
+}
+
+/************************/
+/*      TYPOGRAPHY      */
+/************************/
+#login .name {
+	font-size: 1.2em;
+	font-weight: bold;
+}
+#login .url {
+	font-size: 0.8em;
+}
+#menu a, header {
+	font-family: sans-serif;
+}
+#menu a h1, article.project header h1 {
+	font-size: 1.4em;
+	font-variant: small-caps;
+}
+#menu a p, article.project header p {
+
+}
+article.note {
+	line-height: 1.5em;
+}
+input, textarea {
+	font-size: 1em;
+}
+.tool {
+	font-size: 0.6em;
+	font-family: sans-serif;
+	text-transform: uppercase;
+}
+.tool a, #menu a, header a {
+	text-decoration: none;
+	color: black;
+}
+.tool a.selected {
+	text-decoration: underline;
+}
+
+/********************/
+/*      INPUTS      */
+/********************/
+.editor input, .editor textarea{
+	margin-top: 10px;
+}
+#login input {
+	padding: 5px;
+}
+textarea {
+	resize: none;
+}
+button {
+	padding: 5px;
+}
