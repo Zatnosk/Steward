@@ -177,7 +177,6 @@ var warehouse = {
 	'store_box': function(box){
 		this.tent_id_index[box.get_tent_id()] = box
 		this.local_id_index[box.get_local_id()] = box
-		console.log('stored', box)
 		return box
 	},
 	'update_box': function(box, tent_post, parent){
@@ -185,7 +184,6 @@ var warehouse = {
 		box.tent_post = tent_post
 		box.data = tent_post //deprecated
 		if(parent) box.parent = parent
-		console.log('updated', box)
 		return box
 	}
 }
