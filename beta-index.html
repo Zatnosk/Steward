@@ -31,45 +31,45 @@
 </script>
 <body>
 <header>
-	<a id="home-link"><h1>Steward</h1></a><img src="" class="user_picture" id="avatar">
+	<a id="home-link">Steward</a><img src="" class="user_picture" id="avatar">
 </header>
 <main class="default">
-<div id="login">
-	<form class="entity"><img><input id="loginInput" placeholder="https://entity.example.com"><input value="Login" type="submit"></form>
-</div>
-<div id="projectEditor" class="editor">
-	<div>
-		<div>
-			<button class="_save">Save &amp; close</button>
-			<button class="_close">Close</button>
-			<button class="_delete">Delete</button>
-		</div>
-		<input>
-		<textarea></textarea>
+	<div id="login">
+		<form class="entity"><img><input id="loginInput" placeholder="https://entity.example.com"><input value="Login" type="submit"></form>
 	</div>
-</div>
-<div id="noteEditor" class="editor">
-	<div>
+	<div id="projectEditor" class="editor">
 		<div>
-			<button class="_save">Save &amp; close</button>
-			<button class="_close">Close</button>
-			<button class="_delete">Delete</button>
+			<div>
+				<button class="_save">Save &amp; close</button>
+				<button class="_close">Close</button>
+				<button class="_delete">Delete</button>
+			</div>
+			<input>
+			<textarea></textarea>
 		</div>
-		<input>
-		<textarea></textarea>
 	</div>
-</div>
-<div id="taskEditor" class="editor">
-	<div>
+	<div id="noteEditor" class="editor">
 		<div>
-			<button class="_save">Save &amp; close</button>
-			<button class="_close">Close</button>
-			<button class="_delete">Delete</button>
+			<div>
+				<button class="_save">Save &amp; close</button>
+				<button class="_close">Close</button>
+				<button class="_delete">Delete</button>
+			</div>
+			<input>
+			<textarea></textarea>
 		</div>
-		<input>
-		<input>
 	</div>
-</div>
+	<div id="taskEditor" class="editor">
+		<div>
+			<div>
+				<button class="_save">Save &amp; close</button>
+				<button class="_close">Close</button>
+				<button class="_delete">Delete</button>
+			</div>
+			<input>
+			<input>
+		</div>
+	</div>
 </main>
 <script>
 	var steward = Tarperium(app_data, new Interface())

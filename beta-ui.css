@@ -8,19 +8,22 @@ html, .editor > div {
 body > header {
 	background: green;
 }
-body > header > * {
+body > header a {
+	display: inline-block;
+	height: 2rem;
+	vertical-align: bottom;
 	line-height: 2rem;
+	font-size: 2rem;
 }
 body > header .user_picture {
-	float: left;
-	width: 20px;
-	height: 20px;
-	margin: 5px;
+	display: inline-block;
+	height: 2rem;
+	vertical-align: bottom;
 	border-radius: 5px;
+	margin-left: 1rem;
 }
 
 main {
-	background: #eee;
 	padding: 20px;
 }
 main > * {
@@ -29,10 +32,17 @@ main > * {
 main > .active {
 	display: block;
 }
+main.active {
+	text-align: center;
+	width: 100%;
+	padding: 20px 0;
+	overflow: hidden;
+}
 main.active > .project {
-	display: block;
-	overflow: auto;
-	margin: 0 0 20px 0;
+	display: inline-block;
+	vertical-align: top;
+	width: 800px;
+	margin: 0 10px 20px;
 }
 .project header {
 	margin-bottom: 20px;
@@ -40,7 +50,7 @@ main.active > .project {
 main.active .note p,
 main.active .task {
 	min-width: 200px;
-	max-height: 15em;
+	max-height: 7.5em;
 	overflow: hidden;
 }
 main.active .task:not(:first-child),
@@ -61,7 +71,6 @@ main.active .note:nth-child(n+4){
 #login .entity {
 	margin-top: 20px;
 }
-body > header > :not(:first-child), 
 .task > :not(:first-child),
 #login .entity > :not(:first-child) {
 	margin-left: 20px;
@@ -127,13 +136,12 @@ body > header,
 /**********************/
 /*      FLEX BOX      */
 /**********************/
-html, body, main,
+html, body, main:not(.active),
 .project > div,
 .editor > div {
 	display: flex;
 	flex-flow: column;
 }
-body > header,
 #login > .entity,
 article.task,
 .project > div > div,
